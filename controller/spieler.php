@@ -1,6 +1,6 @@
 <?php
 
-class lottery extends qrClass
+class spieler extends qrClass
 {
 	private $id;
   private $name;
