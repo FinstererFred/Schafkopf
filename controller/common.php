@@ -6,13 +6,13 @@ class DBProvider {
 	protected $db;
 
 	public function __construct($db)
-  {
-	  $this->db = $db;
-  }
+	{
+		$this->db = $db;
+	}
 
 
-  public function getAllBy($class,$array='')
-  {
+  	public function getAllBy($class,$array='')
+  	{
 
 		$out = '';
 		if(is_array($array)) {
@@ -59,7 +59,7 @@ class DBProvider {
 
 		$arr = array();
 		while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
-    {
+   		{
 			$obj = new $class;
 			foreach($result as $key => $value) {
 				$func = 'set'.ucwords($key);
@@ -77,7 +77,7 @@ class DBProvider {
 			}
 
 			$arr[] = $obj;
-    }
+   		}
 
 		if(count($arr) > 1) {
 			return $arr;
@@ -90,9 +90,10 @@ class DBProvider {
 				return false;
 			}
 		}
-  }
+  	}
 
-	public function saveObject($obj) {
+	public function saveObject($obj) 
+	{
 		$array	 = $obj->toArray();
 		$class = get_class($obj);
 		$out = array();
@@ -133,7 +134,8 @@ class DBProvider {
 		return true;
 	}
 
-	public function saveNewObj($obj) {
+	public function saveNewObj($obj) 
+	{
 		$array	 = $obj->toArray();
 		$class = get_class($obj);
 		$out = array();
@@ -173,7 +175,7 @@ class DBProvider {
 					$stmt->bindParam(":".$key, $value);
 				}
 			}
-    }
+    	}
 
 		try {
 			$stmt->execute();
@@ -184,7 +186,8 @@ class DBProvider {
 		return $this->db->lastInsertId();
 	}
 
-	public function deleteObj($obj) {
+	public function deleteObj($obj) 
+	{
 		$class = get_class($obj);
 		$id = $obj->getId();
 		$sql = "DELETE FROM ".$class."s WHERE id = :id LIMIT 1";
@@ -200,8 +203,8 @@ class DBProvider {
 		return true;
 	}
 
-	public function updateFromArray(&$obj, $data) {
-
+	public function updateFromArray(&$obj, $data) 
+	{
 		foreach($data as $key => $value) {
 			$func = 'set'.ucwords($key);
 			if(method_exists($obj, $func)) {
