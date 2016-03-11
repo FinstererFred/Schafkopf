@@ -14,5 +14,6 @@ $action = $_GET['action'];
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if($action == 'getSpieler') {
-  $mandator = $provider->getAllBy('spieler', array("id" => $id));
+  $spieler = $provider->getAllBy('spieler', array("id" => $id));
+  echo json_encode($spieler->toArray());
 }

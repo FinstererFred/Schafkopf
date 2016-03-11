@@ -30,7 +30,7 @@ class DBProvider {
 			$sorting = $sorting->getSorting();
 
 			if($out != '') {
-				$sql = "SELECT * FROM ".$class."s WHERE 1=1 ".$out;
+				$sql = "SELECT * FROM ".$class." WHERE 1=1 ".$out;
 				if($sorting != '') {
 					$sql .= ' ORDER BY '.$sorting;
 				}

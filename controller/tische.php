@@ -8,15 +8,19 @@ class tische extends qrClass
   	private $sp2;
   	private $sp3;
   	private $sp4;
+    private $verantwortlicher;
+    public $sorting;
 	
-	function __construct($id = NULL, $name = NULL, $sp1 = NULL, $sp2 = NULL, $sp3 = NULL, $sp4 = NULL)
+	function __construct($id = NULL, $name = NULL, $sp1 = NULL, $sp2 = NULL, $sp3 = NULL, $sp4 = NULL; $verantwortlicher = NULL)
 	{
 		$this->id = $id;
-    	$this->tischID = $name;
+    $this->name = $name;
 		$this->sp1 = $sp1;
 		$this->sp2 = $sp2;
 		$this->sp3 = $sp3;
-		$this->sp4 = $sp4;
+    $this->sp4 = $sp4;
+		$this->verantwortlicher = $verantwortlicher;
+    $this->sorting = '';
 	}
 
   public function getId() {

@@ -1,9 +1,9 @@
 <?php
 
-$dbhost = '';
-$dbname = '';
-$dbuser = '';
-$dbpw = '';
+$dbhost = 'localhost';
+$dbname = 'schafkopf';
+$dbuser = 'root';
+$dbpw = 'root';
 
 try
 {

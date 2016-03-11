@@ -7,6 +7,7 @@ class spiele extends qrClass
   private $typID;
 	private $preis;
 	private $timestamp;
+  public $sorting;
 	
 
 	function __construct($id = NULL, $tischID = NULL, $typID = NULL, $preis = NULL, $timestamp = NULL)
@@ -16,6 +17,7 @@ class spiele extends qrClass
 		$this->typID = $typID;
 		$this->preis = $preis;
 		$this->timestamp = $timestamp;
+    $this->sorting = "timestamp";
 	}
 
   public function getId() {

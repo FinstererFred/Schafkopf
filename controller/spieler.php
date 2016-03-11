@@ -5,6 +5,7 @@ class spieler extends qrClass
 	private $id;
   private $name;
 	private $kurz;
+  public $sorting;
 	
 
 	function __construct($id = NULL, $name = NULL, $kurz = NULL)
@@ -12,6 +13,7 @@ class spieler extends qrClass
 		$this->id = $id;
 		$this->name = $name;
 		$this->kurz = $kurz;
+    $this->sorting = 'kurz';
 	}
 
   public function getId() {

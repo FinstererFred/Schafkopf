@@ -69,3 +69,6 @@ CREATE TABLE `ergebnis` (
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
+
+ALTER TABLE `tische`
+	ADD COLUMN `verantwortlicher` INT(11) NOT NULL AFTER `sp4`;
