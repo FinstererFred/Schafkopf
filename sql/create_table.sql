@@ -14,7 +14,7 @@ CREATE TABLE `spieltyp` (
 	`grundtarif` FLOAT NOT NULL,
 	PRIMARY KEY (`id`)
 )
-COLLATE='latin1_swedish_ci'
+COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
 
@@ -35,7 +35,7 @@ CREATE TABLE `tische` (
 	CONSTRAINT `FK_sp3` FOREIGN KEY (`sp3`) REFERENCES `spieler` (`id`),
 	CONSTRAINT `FK_sp4` FOREIGN KEY (`sp4`) REFERENCES `spieler` (`id`)
 )
-COLLATE='latin1_swedish_ci'
+COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
 
@@ -51,7 +51,7 @@ CREATE TABLE `spiele` (
 	CONSTRAINT `FK_tisch` FOREIGN KEY (`tischID`) REFERENCES `tische` (`id`),
 	CONSTRAINT `FK_typ` FOREIGN KEY (`typID`) REFERENCES `spieltyp` (`id`)
 )
-COLLATE='latin1_swedish_ci'
+COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
 
@@ -59,13 +59,13 @@ CREATE TABLE `ergebnis` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`spielID` INT(11) NOT NULL,
 	`spielerID` INT(11) NOT NULL,
-	`gewinn` TINYINT(1) NULL DEFAULT NULL,
+	`gewinner` TINYINT(1) NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	INDEX `FK_spiel` (`spielID`),
 	INDEX `FK_spieler` (`spielerID`),
 	CONSTRAINT `FK_spiel` FOREIGN KEY (`spielID`) REFERENCES `spiele` (`id`),
 	CONSTRAINT `FK_spieler` FOREIGN KEY (`spielerID`) REFERENCES `spieler` (`id`)
 )
-COLLATE='latin1_swedish_ci'
+COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
