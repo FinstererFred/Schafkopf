@@ -1,6 +1,5 @@
 <?php
 
-
 class DBProvider {
 
 	protected $db;
@@ -212,6 +211,7 @@ class DBProvider {
 			}
 		}
 	}
+}
 
 class qrClass {
 

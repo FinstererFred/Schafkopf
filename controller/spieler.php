@@ -27,14 +27,14 @@ class spieler extends qrClass
   }
 
   public function setId($id) {
-    $this->id = $id
+    $this->id = $id;
   }
 
   public function setName($name) {
-    $this->name = $name
+    $this->name = $name;
   }
 
   public function setKurz($kurz) {
-    $this->kurz = $kurz
+    $this->kurz = $kurz;
   } 
 }

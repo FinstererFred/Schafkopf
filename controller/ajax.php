@@ -1,7 +1,12 @@
 <?php
 
 include '../controller/dbconfig.php';
+include '../controller/common.php';
+include '../controller/ergebnis.php';
+include '../controller/spiele.php';
 include '../controller/spieler.php';
+include '../controller/spieltyp.php';
+include '../controller/tische.php';
 
 $provider = new DBProvider($db);
 
