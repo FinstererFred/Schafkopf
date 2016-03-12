@@ -22,5 +22,5 @@ ul { margin:0px;padding:0px;}
 
 .gewinner {background-color: green; color:white;}
 
-#spieler  li {cursor:pointer;float: left; padding:10px; border:1px solid black; width: 60px; text-align:center;}
+#spieler  li {margin:5px; cursor:pointer;float: left; padding:10px; border:1px solid black; width: 60px; text-align:center;}
 #spielTyp li input { margin-right:4px;}
