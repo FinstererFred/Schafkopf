@@ -9,8 +9,7 @@ class DBProvider {
 		$this->db = $db;
 	}
 
-
-  	public function getAllBy($class,$array='')
+ 	public function getAllBy($class,$array='')
   	{
 
 		$out = '';
@@ -46,7 +45,7 @@ class DBProvider {
 	    }
 
 		} else {
-			$sql = "SELECT * from ".$class."s";
+			$sql = "SELECT * from ".$class;
 			$stmt = $this->db->prepare($sql);
 		}
 
@@ -107,7 +106,7 @@ class DBProvider {
 		}
 		$out = implode(', ',$out);
 
-		$sql = "UPDATE ".$class."s SET ".$out." WHERE id = :id";
+		$sql = "UPDATE ".$class." SET ".$out." WHERE id = :id";
 
 		$stmt = $this->db->prepare($sql);
 
@@ -152,7 +151,7 @@ class DBProvider {
 		$out = implode(', ',$out);
 		$out2 = implode(', ',$out2);
 
-		$sql = "INSERT INTO ".$class."s (".$out2.") VALUES (".$out.");";
+		$sql = "INSERT INTO ".$class." (".$out2.") VALUES (".$out.");";
 		$stmt = $this->db->prepare($sql);
 
 		foreach($array as $key => &$value) {
@@ -189,7 +188,7 @@ class DBProvider {
 	{
 		$class = get_class($obj);
 		$id = $obj->getId();
-		$sql = "DELETE FROM ".$class."s WHERE id = :id LIMIT 1";
+		$sql = "DELETE FROM ".$class." WHERE id = :id LIMIT 1";
 		$stmt = $this->db->prepare($sql);
 		$stmt->bindParam(":id", $id);
 
@@ -210,6 +209,21 @@ class DBProvider {
 				$obj->$func($value);
 			}
 		}
+	}
+
+	public function getTischSpielerDetails($ids) {
+		$sql = "SELECT * from spieler where id in (".$ids.")";
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute();
+		$out = array();
+
+		while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
+   		{
+   			$out[] = $result;
+
+   		}
+   		return $out;
 	}
 }
 

@@ -1,0 +1,26 @@
+body { padding-top:20px;}
+li { list-style: none; }
+ul { margin:0px;padding:0px;}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+.inputBox {
+	border-radius: 10px;
+	background-color: #efefef;
+	border:1px solid #aeaeae;
+	padding-bottom:20px;
+}
+
+.gewinner {background-color: green; color:white;}
+
+#spieler  li {cursor:pointer;float: left; padding:10px; border:1px solid black; width: 60px; text-align:center;}
+#spielTyp li input { margin-right:4px;}
