@@ -71,8 +71,76 @@ if($action == 'saveGame') {
 		$ergebnis = new ergebnis();
 		$value->spielID = $spielID;
 		$provider->updateFromArray($ergebnis, $value);
+		$provider->saveNewObj($ergebnis);
 	}
 
 	echo "ok";
 
+}
+
+if($action == 'getSummen') {
+	$sql = 'select er.spielerID, sp.preis, er.spielID, er.gewinner from tische left join spiele sp on sp.tischID = tische.id left join ergebnis er on er.spielID = sp.id where tische.id = 2';
+	$stmt = $db->prepare($sql);
+	$stmt->execute();
+
+	$arr = array();
+	$grp = -1;
+	$preis = 0;
+	$winner = 0;
+	$tempwinner = [];
+	$first = true;
+	$i = 0;
+	$lastpreis = 0;
+	$verlierer = 0;
+	while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
+   	{ 
+		
+   		if(empty($arr[$result['spielerID']])) {
+   			$arr[$result['spielerID']] = 0;
+   		}
+
+		if($preis == 0) {
+			$preis = $result['preis'];
+			$grp = $result['spielID'];
+		}
+
+   		
+   		if($i > 0 && $grp != $result['spielID'] ) {
+   			foreach($tempwinner as $twinner) {
+   				$arr[$twinner] += $preis * $winner;
+  			}
+
+			foreach($temploser as $twinner) {
+   				$arr[$twinner] -= $preis * $verlierer/(count($tempwinner));
+  			}
+
+  			$tempwinner = array();
+  			$temploser = array();
+  			$preis = $result['preis'];
+   			$grp = $result['spielID'];
+	   		$winner = 0;
+	   		$verlierer = 0;
+	   	}
+   	
+   		if($result['gewinner'] == 0) {
+   			$temploser[] = $result['spielerID'];
+   			$winner++; 
+   		} else {
+   			$verlierer++;
+   			$tempwinner[] = $result['spielerID']; 
+   		}
+   		
+   		$lastpreis = $result['preis'];
+   		$i++;
+   	}
+
+   	foreach($tempwinner as $twinner) {
+		$arr[$twinner] +=  $lastpreis * $winner;
+	}
+
+	foreach($temploser as $twinner) {
+   		$arr[$twinner] -= $preis * ($winner/count($tempwinner));
+  	}
+
+   	var_dump($arr);
 }
