@@ -57,3 +57,22 @@ if($action == 'getTisch') {
 
 	echo json_encode($out);
 }	
+
+if($action == 'saveGame') {
+	$data = json_decode($_POST['data']);
+
+	$spiel = new spiele();
+	$provider->updateFromArray($spiel, $data);
+	$spielID = $provider->saveNewObj($spiel);
+
+	$spieler = $data->winner;
+
+	foreach ($spieler as $value) {
+		$ergebnis = new ergebnis();
+		$value->spielID = $spielID;
+		$provider->updateFromArray($ergebnis, $value);
+	}
+
+	echo "ok";
+
+}

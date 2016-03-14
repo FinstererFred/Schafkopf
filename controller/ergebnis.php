@@ -6,6 +6,7 @@ class ergebnis extends qrClass
   private $spielID;
   private $spielerID;
 	private $gewinner;
+  public $sorting;
 	
 
 	function __construct($id = NULL, $spielID = NULL, $spielerID = NULL, $gewinner = NULL)
@@ -14,7 +15,9 @@ class ergebnis extends qrClass
     $this->spielID = $spielID;
 		$this->spielerID = $spielerID;
 		$this->gewinner = $gewinner;
-	}
+	  $this->sorting = '';
+  }
+
 
   public function getId() {
     return $this->id;

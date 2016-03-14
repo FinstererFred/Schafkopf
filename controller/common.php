@@ -159,16 +159,11 @@ class DBProvider {
 			if(property_exists($class, $key)&& method_exists($class, $func)) {
 				if($key != 'id') {
 					if(!$value) $value = NULL;
-					if(strpos($key, 'date') > -1) {
-						if ($class == 'lottery'){
-							$value = date('Y-m-d H:m:s', strtotime($value));
-						}
-						else {
-							$value = date('Y-m-d', strtotime($value));
-						}
-					}
-					if(strpos($key, 'birthday') > -1) {
-						$value = date('Y-m-d', strtotime($value));
+					if(strpos($key, 'timestamp') > -1) {
+						
+						$date = new DateTime($value); 
+						$value = $date->format('Y-m-d H:i:s');
+						
 					}
 					$stmt->bindParam(":".$key, $value);
 				}

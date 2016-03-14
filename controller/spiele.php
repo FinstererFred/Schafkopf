@@ -17,7 +17,7 @@ class spiele extends qrClass
 		$this->typID = $typID;
 		$this->preis = $preis;
 		$this->timestamp = $timestamp;
-    $this->sorting = "timestamp";
+    $this->sorting = "timestamp DESC";
 	}
 
   public function getId() {

@@ -11,10 +11,10 @@
 
 
 <div class="row">
-    <div class="col-lg-6 col-centered" >
+    <div class="col-md-6 col-centered" >
     	<div class="row">
-    		<div class="col-lg-6 vcenter"><h2>Schafkopf</h2></div><!--
-    	--><div class="col-lg-6 text-right vcenter">
+    		<div class="col-md-6 vcenter"><h2>Schafkopf</h2></div><!--
+    	--><div class="col-md-6 text-right vcenter">
 				<select id="tische">
 					<option>Tisch auswählen</option>
 				</select>
@@ -22,7 +22,7 @@
     	</div>
 
     	<div class="row">
-    		<div class="col-lg-12 inputBox">
+    		<div class="col-md-12 inputBox">
     			<h3>Neues Spiel</h3>
     			<table width ="100%">
     				<tr>
@@ -38,7 +38,7 @@
     					<td valign="top"><ul id="spieler"></ul></td>
     					<td valign="top"><input type="text" class="form-control" id="kosten" /></td>
     					<td valign="top"></td>
-    					<td valign="top"><button type="button " class="btn btn-default btn-sm">
+    					<td valign="top"><button type="button" id="save" class="btn btn-default btn-sm">
 							  <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Speichern
 							</button>
 						</td>
@@ -70,7 +70,7 @@
 			var out = '';
 			typen = data;
 			for(var i in data) {
-				out+='<li><input type="radio" name="spieltyp" id="typ_'+data[i].id+'"><label for="typ_'+data[i].id+'"> '+data[i].name+'</li>';
+				out+='<li><input type="radio" name="spieltyp" id="typ_'+data[i].id+'" value="'+data[i].id+'"><label for="typ_'+data[i].id+'"> '+data[i].name+'</li>';
 			}
 			$('#spielTyp').html(out);
 		});
@@ -103,10 +103,10 @@
 				tisch = data.tisch;
 
 				var outSpieler = '';
-				outSpieler+= '<li>'+spieler[tisch.sp1].kurz+'</li>';
-				outSpieler+= '<li>'+spieler[tisch.sp2].kurz+'</li>';
-				outSpieler+= '<li>'+spieler[tisch.sp3].kurz+'</li>';
-				outSpieler+= '<li>'+spieler[tisch.sp4].kurz+'</li>';
+				outSpieler+= '<li data-id="'+spieler[tisch.sp1].id+'">'+spieler[tisch.sp1].kurz+'</li>';
+				outSpieler+= '<li data-id="'+spieler[tisch.sp2].id+'">'+spieler[tisch.sp2].kurz+'</li>';
+				outSpieler+= '<li data-id="'+spieler[tisch.sp3].id+'">'+spieler[tisch.sp3].kurz+'</li>';
+				outSpieler+= '<li data-id="'+spieler[tisch.sp4].id+'">'+spieler[tisch.sp4].kurz+'</li>';
 
 				$('#spieler').html(outSpieler);
 			});
@@ -114,9 +114,55 @@
 
 		$('#spieler').on('click', 'li', function() {
 			$(this).toggleClass('gewinner');
-		})
+		});
 
+		$('#save').on('click', function() {
+			
+			var game = {};
+			game.winner = [];
+			$('#spieler li').each(function() {
+				gewinner = 0;
+				if( $(this).hasClass('gewinner') ) {
+					gewinner = 1;
+				}
+
+				game.winner.push( { 'spielerID' : $(this).data('id') , 'gewinner' : gewinner } );
+			});
+
+			game.preis = $('#kosten').val();
+			game.typID = $('input[name=spieltyp]:checked').val();
+			game.tischID = $('#tische').val();
+			game.timestamp = getTime();
+
+			$.ajax({
+				url: 'controller/ajax.php?action=saveGame',
+				data: { 'data' : JSON.stringify(game)},
+				
+				method: "POST"
+
+			})
+			.done(function(data) {
+			
+				if(data === 'ok') {
+					$('#spieler li').removeClass('gewinner');
+					$('#kosten').val('');
+				}
+			});
+		});
 	});
+
+	function getTime() {
+		var date = new Date();
+		var day = date.getDate();
+		var monthIndex = date.getMonth();
+		var year = date.getFullYear();
+		var hours = date.getHours();
+		var minutes = date.getMinutes();
+		var seconds = date.getSeconds();
+
+		return year+'-'+(monthIndex+1)+'-'+day+' '+hours+':'+minutes+':'+seconds;
+	}
+	
 </script> 
 
 </body>
