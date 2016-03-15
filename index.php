@@ -5,10 +5,10 @@
 	<title>Schafkopf</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
+	<link href="backend/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
+	<link href="backend/bower_components/bootstrap-select-1.10.0/dist/css/bootstrap-select.min.css" rel="stylesheet" >
 	</head>
 <body>
- 
-
 
 <div class="row">
     <div class="col-md-6 col-centered" >
@@ -47,23 +47,41 @@
     			</table>
     		</div>
     </div>
+		<div class="row">
+			<div class="col-md-12 inputBox">
+				<table class="table table-striped table-bordered table-hover" id="dataTables-example">
+						<thead>
+								<tr>
+										<th>spiel</th>
+										<th id="th_sp1"></th>
+										<th id="th_sp2"></th>
+										<th id="th_sp3"></th>
+										<th id="th_sp4"></th>
+								</tr>
+						</thead>
+				</table>
+			</div>
 </div>
 
 
 
 <script src="js/jquery-2.2.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="backend/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+<script src="backend/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+<script src="backend/bower_components/bootstrap-select-1.10.0/dist/js/bootstrap-select.min.js"></script>
+
 
 <script type="text/javascript">
 	var spieler=[];
 	var tisch;
 	var typen;
-	var loggedinUser = 3;	
+	var loggedinUser = 3;
 
 	$(function () {
 		$.ajax({
-			url: 'controller/ajax.php', 
-			data: {'action' : 'getTypen'}, 
+			url: 'controller/ajax.php',
+			data: {'action' : 'getTypen'},
 			dataType: "json"
 		})
 		.done(function(data) {
@@ -76,8 +94,8 @@
 		});
 
 		$.ajax({
-			url: 'controller/ajax.php', 
-			data: {'action' : 'getTische', 'id' : loggedinUser}, 
+			url: 'controller/ajax.php',
+			data: {'action' : 'getTische', 'id' : loggedinUser},
 			dataType: "json"
 		})
 		.done(function(data) {
@@ -95,7 +113,7 @@
 				dataType: "json"
 			})
 			.done(function(data) {
-				
+
 				data = data[0];
 				for(var i in data.spieler) {
 					spieler[data.spieler[i].id] = data.spieler[i];
@@ -117,7 +135,7 @@
 		});
 
 		$('#save').on('click', function() {
-			
+
 			var game = {};
 			game.winner = [];
 			$('#spieler li').each(function() {
@@ -137,12 +155,10 @@
 			$.ajax({
 				url: 'controller/ajax.php?action=saveGame',
 				data: { 'data' : JSON.stringify(game)},
-				
 				method: "POST"
-
 			})
 			.done(function(data) {
-			
+
 				if(data === 'ok') {
 					$('#spieler li').removeClass('gewinner');
 					$('#kosten').val('');
@@ -150,6 +166,32 @@
 			});
 		});
 	});
+/*
+	var table = $('#dataTables-example').DataTable({
+			language: {
+							"url": "backend/bower_components/datatables/media/js/German.json"
+					},
+		 ajax: "../controller/ajax.php?action=mandators",
+		 responsive: true,
+		 columnDefs: [
+			 { targets: [0], sortable: false},
+			 { targets: [0], visible:false}
+		 ],
+		 columns: [
+				{ data: "id"},
+				{ data: "name" }]
+	});
+*/
+
+	function getSumme() {
+		$.ajax({
+			url: 'controller/ajax.php?action=getSummenR',
+			data: { 'id' : $('#tische').val() }
+		})
+		.done(function(data) {
+			console.log(data);
+		});
+	}
 
 	function getTime() {
 		var date = new Date();
@@ -162,8 +204,8 @@
 
 		return year+'-'+(monthIndex+1)+'-'+day+' '+hours+':'+minutes+':'+seconds;
 	}
-	
-</script> 
+
+</script>
 
 </body>
 </html>
