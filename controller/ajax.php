@@ -107,11 +107,11 @@ if($action == 'getSummen') {
    		
    		if($i > 0 && $grp != $result['spielID'] ) {
    			foreach($tempwinner as $twinner) {
-   				$arr[$twinner] += $preis * $winner;
+   				$arr[$twinner] += $preis * count($temploser);
   			}
 
-			foreach($temploser as $twinner) {
-   				$arr[$twinner] -= $preis * $verlierer/(count($tempwinner));
+			foreach($temploser as $tloser) {
+   				$arr[$tloser] -= count($tempwinner) > 2 ? $preis * 3 : $preis;
   			}
 
   			$tempwinner = array();
@@ -124,22 +124,20 @@ if($action == 'getSummen') {
    	
    		if($result['gewinner'] == 0) {
    			$temploser[] = $result['spielerID'];
-   			$winner++; 
    		} else {
-   			$verlierer++;
    			$tempwinner[] = $result['spielerID']; 
    		}
-   		
+
    		$lastpreis = $result['preis'];
    		$i++;
    	}
 
    	foreach($tempwinner as $twinner) {
-		$arr[$twinner] +=  $lastpreis * $winner;
+		$arr[$twinner] +=  $lastpreis * count($temploser);
 	}
 
-	foreach($temploser as $twinner) {
-   		$arr[$twinner] -= $preis * ($winner/count($tempwinner));
+	foreach($temploser as $loser) {
+   		$arr[$loser] -= count($tempwinner) > 2 ? $preis * 3 : $preis;
   	}
 
    	var_dump($arr);
