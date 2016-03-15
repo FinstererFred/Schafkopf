@@ -4,9 +4,10 @@ class DBProvider {
 
 	protected $db;
 
-	public function __construct($db)
+	public function __construct($db, $prefix)
 	{
 		$this->db = $db;
+		$thix->tablePrefix = $prefix;
 	}
 
  	public function getAllBy($class,$array='')
@@ -29,7 +30,7 @@ class DBProvider {
 			$sorting = $sorting->getSorting();
 
 			if($out != '') {
-				$sql = "SELECT * FROM ".$class." WHERE 1=1 ".$out;
+				$sql = "SELECT * FROM ".$this->tablePrefix.$class." WHERE 1=1 ".$out;
 				if($sorting != '') {
 					$sql .= ' ORDER BY '.$sorting;
 				}
@@ -45,7 +46,7 @@ class DBProvider {
 	    }
 
 		} else {
-			$sql = "SELECT * from ".$class;
+			$sql = "SELECT * from ".$tablePrefix.$class;
 			$stmt = $this->db->prepare($sql);
 		}
 
@@ -106,7 +107,7 @@ class DBProvider {
 		}
 		$out = implode(', ',$out);
 
-		$sql = "UPDATE ".$class." SET ".$out." WHERE id = :id";
+		$sql = "UPDATE ".$this->tablePrefix.$class." SET ".$out." WHERE id = :id";
 
 		$stmt = $this->db->prepare($sql);
 
@@ -151,7 +152,7 @@ class DBProvider {
 		$out = implode(', ',$out);
 		$out2 = implode(', ',$out2);
 
-		$sql = "INSERT INTO ".$class." (".$out2.") VALUES (".$out.");";
+		$sql = "INSERT INTO ".$this->tablePrefix.$class." (".$out2.") VALUES (".$out.");";
 		$stmt = $this->db->prepare($sql);
 
 		foreach($array as $key => &$value) {
@@ -183,7 +184,7 @@ class DBProvider {
 	{
 		$class = get_class($obj);
 		$id = $obj->getId();
-		$sql = "DELETE FROM ".$class." WHERE id = :id LIMIT 1";
+		$sql = "DELETE FROM ".$this->tablePrefix.$class." WHERE id = :id LIMIT 1";
 		$stmt = $this->db->prepare($sql);
 		$stmt->bindParam(":id", $id);
 
@@ -207,7 +208,7 @@ class DBProvider {
 	}
 
 	public function getTischSpielerDetails($ids) {
-		$sql = "SELECT * from spieler where id in (".$ids.")";
+		$sql = "SELECT * from ".$this->tablePrefix."spieler where id in (".$ids.")";
 
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute();
@@ -258,7 +259,7 @@ function convertToWindowsCharset($string) {
 function LoginDBCheck($db, $username, $password) {
 	$password = md5($password);
 
-	$sql = "SELECT user.* FROM user WHERE name = :name AND password = :password";
+	$sql = "SELECT user.* FROM ".$this->tablePrefix."user WHERE name = :name AND password = :password";
 	$stmt = $db->prepare($sql);
 	$stmt->bindParam(':name', $username);
 	$stmt->bindParam(':password', $password);
