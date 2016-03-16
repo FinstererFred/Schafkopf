@@ -26,3 +26,6 @@ ul { margin:0px;padding:0px;}
 #spielTyp li input { margin-right:4px;}
 
 #summen td {background-color:#abd8ef}
+input[type=radio] {position: relative; top:1px}
+
+.inputTable th { padding-bottom: 10px;}

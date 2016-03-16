@@ -259,7 +259,7 @@ function convertToWindowsCharset($string) {
 function LoginDBCheck($db, $username, $password) {
 	$password = md5($password);
 
-	$sql = "SELECT user.* FROM ".$this->tablePrefix."user WHERE name = :name AND password = :password";
+	$sql = "SELECT user.* FROM ".$this->tablePrefix."spieler WHERE kurz = :name AND password = :password";
 	$stmt = $db->prepare($sql);
 	$stmt->bindParam(':name', $username);
 	$stmt->bindParam(':password', $password);

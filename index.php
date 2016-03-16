@@ -24,7 +24,7 @@
     	<div class="row">
     		<div class="col-md-12 inputBox">
     			<h3>Neues Spiel</h3>
-    			<table width ="100%">
+    			<table width ="100%" class="inputTable">
     				<tr>
     					<th>Spiel-Typ</th>
     					<th width="160">Spieler</th>
@@ -36,7 +36,7 @@
     				<tr>
     					<td valign="top"><ul id="spielTyp"></ul></td>
     					<td valign="top"><ul id="spieler"></ul></td>
-    					<td valign="top"><input type="text" class="form-control" id="kosten" /></td>
+    					<td valign="top"><input type="tel" class="form-control" id="kosten" /></td>
     					<td valign="top"></td>
     					<td valign="top"><button type="button" id="save" class="btn btn-default btn-sm">
 							  <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Speichern
