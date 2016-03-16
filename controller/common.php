@@ -46,7 +46,7 @@ class DBProvider {
 	    }
 
 		} else {
-			$sql = "SELECT * from ".$tablePrefix.$class;
+			$sql = "SELECT * from ".$this->tablePrefix.$class;
 			$stmt = $this->db->prepare($sql);
 		}
 
@@ -91,12 +91,12 @@ class DBProvider {
 		}
   	}
 
-	public function saveObject($obj) 
+	public function saveObject($obj)
 	{
 		$array	 = $obj->toArray();
 		$class = get_class($obj);
 		$out = array();
-		
+
 		$sorting = new $class;
 		$sorting = $sorting->getSorting();
 
@@ -133,13 +133,13 @@ class DBProvider {
 		return true;
 	}
 
-	public function saveNewObj($obj) 
+	public function saveNewObj($obj)
 	{
 		$array	 = $obj->toArray();
 		$class = get_class($obj);
 		$out = array();
 		$out2 = array();
-		
+
 		$sorting = new $class;
 		$sorting = $sorting->getSorting();
 
@@ -161,10 +161,10 @@ class DBProvider {
 				if($key != 'id') {
 					if(!$value) $value = NULL;
 					if(strpos($key, 'timestamp') > -1) {
-						
-						$date = new DateTime($value); 
+
+						$date = new DateTime($value);
 						$value = $date->format('Y-m-d H:i:s');
-						
+
 					}
 					$stmt->bindParam(":".$key, $value);
 				}
@@ -180,7 +180,7 @@ class DBProvider {
 		return $this->db->lastInsertId();
 	}
 
-	public function deleteObj($obj) 
+	public function deleteObj($obj)
 	{
 		$class = get_class($obj);
 		$id = $obj->getId();
@@ -197,7 +197,7 @@ class DBProvider {
 		return true;
 	}
 
-	public function updateFromArray(&$obj, $data) 
+	public function updateFromArray(&$obj, $data)
 	{
 		foreach($data as $key => $value) {
 			$func = 'set'.ucwords($key);

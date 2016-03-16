@@ -24,3 +24,5 @@ ul { margin:0px;padding:0px;}
 
 #spieler  li {margin:5px; cursor:pointer;float: left; padding:10px; border:1px solid black; width: 60px; text-align:center;}
 #spielTyp li input { margin-right:4px;}
+
+#summen td {background-color:#abd8ef}

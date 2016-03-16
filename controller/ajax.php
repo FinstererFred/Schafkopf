@@ -78,8 +78,7 @@ if($action == 'saveGame') {
 
 }
 
-
-if($action == 'getSummenR') {
+if($action == 'getSummen') {
 	$sql = "SELECT sum(preis) as stand, spielerID from (
 		SELECT e.spielerID, CASE WHEN gewinner THEN (CASE WHEN gew.anz = 1 THEN s.preis * 3 ELSE s.preis END)
 		ELSE (CASE WHEN gew.anz = 3 THEN s.preis * -3 ELSE s.preis * -1 END) END AS preis
@@ -99,6 +98,33 @@ if($action == 'getSummenR') {
 	while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
 		$out[$result['spielerID']] = $result['stand'];
 	}
-	
+
+	echo json_encode($out);
+}
+
+if($action == 'getListe') {
+	$sql = 'SELECT r.spielID, r.spielerID, r.preis, t.name FROM (
+			SELECT s.typID, s.id AS spielID, e.spielerID, CASE WHEN gewinner THEN (CASE WHEN gew.anz = 1 THEN s.preis * 3 ELSE s.preis END)
+			ELSE (CASE WHEN gew.anz = 3 THEN s.preis * -3 ELSE s.preis * -1 END) END AS preis
+			FROM ergebnis e
+			INNER JOIN spiele s ON e.spielID = s.id
+			INNER JOIN spieler sp ON e.spielerID = sp.id
+			INNER JOIN (
+			SELECT spielID, SUM(gewinner) AS anz
+			FROM ergebnis
+			GROUP BY spielID) gew ON e.spielID = gew.spielID
+			WHERE s.tischID = :id) r
+			INNER JOIN spieltyp t ON r.typID = t.ID
+			ORDER BY spielID DESC';
+
+	$stmt = $db->prepare($sql);
+	$stmt->bindParam(':id', $id);
+	$stmt->execute();
+	$out = array();
+	while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		$out['s'.$result['spielID']]['name'] = $result['name'];
+		$out['s'.$result['spielID']]['erg'][$result['spielerID']] = array('gewinn'  => $result['preis']);
+	}
+
 	echo json_encode($out);
 }

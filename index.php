@@ -46,21 +46,17 @@
 
     			</table>
     		</div>
-    </div>
+    </div><br/>
 		<div class="row">
-			<div class="col-md-12 inputBox">
+			<div class="col-md-12 inputBox"><br/>
 				<table class="table table-striped table-bordered table-hover" id="dataTables-example">
-						<thead>
-								<tr>
-										<th>spiel</th>
-										<th id="th_sp1"></th>
-										<th id="th_sp2"></th>
-										<th id="th_sp3"></th>
-										<th id="th_sp4"></th>
-								</tr>
-						</thead>
+						<thead id="theader"></thead>
+						<tbody id="summen"></tbody>
+						<tbody id="tbody"></tbody>
 				</table>
 			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -77,6 +73,8 @@
 	var tisch;
 	var typen;
 	var loggedinUser = 3;
+
+	var offset = {1: {1:25, 3:-1580, 4:860, 5:745}};
 
 	$(function () {
 		$.ajax({
@@ -115,9 +113,14 @@
 			.done(function(data) {
 
 				data = data[0];
+				var out = '<tr><th></th>';
 				for(var i in data.spieler) {
 					spieler[data.spieler[i].id] = data.spieler[i];
+					out += "<th>"+data.spieler[i].kurz+" ("+data.spieler[i].id+")</th>";
 				}
+				out += "</tr>";
+				$('#theader').html(out);
+
 				tisch = data.tisch;
 
 				var outSpieler = '';
@@ -127,6 +130,9 @@
 				outSpieler+= '<li data-id="'+spieler[tisch.sp4].id+'">'+spieler[tisch.sp4].kurz+'</li>';
 
 				$('#spieler').html(outSpieler);
+
+				getListe();
+				getSumme();
 			});
 		});
 
@@ -162,35 +168,61 @@
 				if(data === 'ok') {
 					$('#spieler li').removeClass('gewinner');
 					$('#kosten').val('');
+					getListe();
+					getSumme();
 				}
+
 			});
 		});
 	});
-/*
-	var table = $('#dataTables-example').DataTable({
-			language: {
-							"url": "backend/bower_components/datatables/media/js/German.json"
-					},
-		 ajax: "../controller/ajax.php?action=mandators",
-		 responsive: true,
-		 columnDefs: [
-			 { targets: [0], sortable: false},
-			 { targets: [0], visible:false}
-		 ],
-		 columns: [
-				{ data: "id"},
-				{ data: "name" }]
-	});
-*/
 
 	function getSumme() {
 		$.ajax({
-			url: 'controller/ajax.php?action=getSummenR',
-			data: { 'id' : $('#tische').val() }
+			url: 'controller/ajax.php?action=getSummen',
+			data: { 'id' : $('#tische').val() }, 
+			dataType : 'json'
 		})
 		.done(function(data) {
-			console.log(data);
+			var out = '<tr><td><b>Summe</b></td>';
+			
+
+			for(var i in data) {
+				
+				var summe = parseInt(data[i]);
+
+				if(typeof(offset[tisch.id]) != 'undefined') {
+					summe += offset[tisch.id][i];
+				}
+
+				out +="<td align='right'>"+summe+" ("+i+")</td>";
+			}
+			out += '</tr>';
+		
+			$('#summen').html(out);
 		});
+
+
+	}
+
+	function getListe() {
+		$.ajax({
+			url: 'controller/ajax.php?action=getListe',
+			data: { 'id' : $('#tische').val() },
+			dataType:'json'
+		})
+		.done(function(data) {
+			var out = '';
+			for(var i in data) {
+				out += '<tr><td>'+data[i]['name']+'</td>';
+				for(var j in data[i]['erg'])
+				{
+					out+='<td align="right">'+data[i]['erg'][j].gewinn+' ('+j+')</td>';
+				}
+				out += '</tr>';
+			}
+		$('#tbody').html(out);
+		});
+
 	}
 
 	function getTime() {
