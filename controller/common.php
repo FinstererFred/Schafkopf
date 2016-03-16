@@ -7,7 +7,7 @@ class DBProvider {
 	public function __construct($db, $prefix)
 	{
 		$this->db = $db;
-		$thix->tablePrefix = $prefix;
+		$this->tablePrefix = $prefix;
 	}
 
  	public function getAllBy($class,$array='')
