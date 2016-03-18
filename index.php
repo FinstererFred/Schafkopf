@@ -5,15 +5,14 @@
 	<title>Schafkopf</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
-	<link href="backend/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
-	<link href="backend/bower_components/bootstrap-select-1.10.0/dist/css/bootstrap-select.min.css" rel="stylesheet" >
+	
 	</head>
-<body>
+<body style="padding:10px">
 
-<div class="row">
+<div >
     <div class="col-md-6 col-centered" >
     	<div class="row">
-    		<div class="col-md-6 vcenter"><h2>Schafkopf</h2></div><!--
+    		<div class="col-md-6 vcenter"><h2>Schafkopfs</h2></div><!--
     	--><div class="col-md-6 text-right vcenter">
 				<select id="tische">
 					<option>Tisch auswählen</option>
@@ -74,7 +73,7 @@
 	var typen;
 	var loggedinUser = 3;
 
-	var offset = {1: {1:25, 3:-1580, 4:860, 5:745}};
+	var offset = {1: {1:-25, 3:-1580, 4:860, 5:745}};
 
 	$(function () {
 		$.ajax({
@@ -107,7 +106,7 @@
 		$('#tische').on('change', function() {
 			$.ajax({
 				url: 'controller/ajax.php',
-				data: {'action' : 'getTisch', 'id' : $(this).val() },
+				data: {'action' : 'getTisch', 'id' : $(this).val(), 'rnd' : Math.random() },
 				dataType: "json"
 			})
 			.done(function(data) {
@@ -179,7 +178,7 @@
 	function getSumme() {
 		$.ajax({
 			url: 'controller/ajax.php?action=getSummen',
-			data: { 'id' : $('#tische').val() }, 
+			data: { 'id' : $('#tische').val(), 'rnd' : Math.random() }, 
 			dataType : 'json'
 		})
 		.done(function(data) {
@@ -207,7 +206,7 @@
 	function getListe() {
 		$.ajax({
 			url: 'controller/ajax.php?action=getListe',
-			data: { 'id' : $('#tische').val() },
+			data: { 'id' : $('#tische').val(), 'rnd' : Math.random() },
 			dataType:'json'
 		})
 		.done(function(data) {
