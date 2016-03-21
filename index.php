@@ -12,7 +12,7 @@
 <div >
     <div class="col-md-6 col-centered" >
     	<div class="row">
-    		<div class="col-md-6 vcenter"><h2>Schafkopfs</h2></div><!--
+    		<div class="col-md-6 vcenter"><h2>Schafkopf</h2></div><!--
     	--><div class="col-md-6 text-right vcenter">
 				<select id="tische">
 					<option>Tisch auswählen</option>
@@ -30,6 +30,7 @@
     					<th width="130">Kosten</th>
     					<th width="30"></th>
     					<th></th>
+    					<th>Doppelt</th>
     				</tr>
 
     				<tr>
@@ -41,6 +42,12 @@
 							  <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Speichern
 							</button>
 						</td>
+						<td valign="top" class="doppelt">
+    						<input  type="checkbox">
+    						<input  type="checkbox">
+    						<input  type="checkbox">
+    						<input  type="checkbox">
+    					</td>
     				</tr>
 
     			</table>
@@ -52,6 +59,23 @@
 						<thead id="theader"></thead>
 						<tbody id="summen"></tbody>
 						<tbody id="tbody"></tbody>
+				</table>
+			</div>
+		</div><br/>
+		<div class="row">
+			<div class="col-md-12 inputBox"><br/>
+				<table class="table table-striped table-bordered table-hover" id="dataTables2">
+						<thead id="theader2">
+		    				<tr>
+		    					<th width="130">Datum</th>
+		    					<th></th>
+		    					<th></th>
+		    					<th></th>
+		    					<th></th>
+    						</tr>
+    					</thead>
+						<tbody id="summen2"></tbody>
+						<tbody id="tbody2"></tbody>
 				</table>
 			</div>
 		</div>
@@ -112,7 +136,7 @@
 			.done(function(data) {
 
 				data = data[0];
-				var out = '<tr><th></th>';
+				var out = '<tr><th width="130"></th>';
 				for(var i in data.spieler) {
 					spieler[data.spieler[i].id] = data.spieler[i];
 					out += "<th>"+data.spieler[i].kurz+" ("+data.spieler[i].id+")</th>";
@@ -132,11 +156,18 @@
 
 				getListe();
 				getSumme();
+				getDayList();
 			});
 		});
 
 		$('#spieler').on('click', 'li', function() {
 			$(this).toggleClass('gewinner');
+		});
+
+		$('#kosten').keypress(function (e) {
+		  if (e.which == 13) {
+		  	$( "#save" ).trigger( "click" );
+		  }
 		});
 
 		$('#save').on('click', function() {
@@ -169,6 +200,7 @@
 					$('#kosten').val('');
 					getListe();
 					getSumme();
+					$('.doppelt input:checked:last').prop('checked',false);
 				}
 
 			});
@@ -193,6 +225,8 @@
 					summe += offset[tisch.id][i];
 				}
 
+				summe = summe / 100;
+
 				out +="<td align='right'>"+summe+" ("+i+")</td>";
 			}
 			out += '</tr>';
@@ -215,13 +249,41 @@
 				out += '<tr><td>'+data[i]['name']+'</td>';
 				for(var j in data[i]['erg'])
 				{
+		
 					out+='<td align="right">'+data[i]['erg'][j].gewinn+' ('+j+')</td>';
 				}
 				out += '</tr>';
 			}
-		$('#tbody').html(out);
+			$('#tbody').html(out);
 		});
 
+	}
+
+	function getDayList() {
+		$.ajax({
+			url: 'controller/ajax.php?action=getDayList',
+			data: { 'id' : $('#tische').val(), 'rnd' : Math.random() },
+			dataType:'json'
+		})
+		.done(function(data) {
+			var out = '';
+			for(var i in data) {
+
+				out += '<tr><td>'+i+'</td>';
+				for(var j in data[i])
+				{
+					gewinn = data[i][j].gewinn;
+					if(typeof(offset[tisch.id]) != 'undefined') {
+						gewinn += offset[tisch.id][data[i][j].id];
+					}	
+					gewinn = gewinn / 100;
+					out+='<td align="right">'+gewinn+' ('+data[i][j].id+')</td>';
+				}
+				out += '</tr>';
+				
+			}
+			$('#tbody2').html(out);
+		});
 	}
 
 	function getTime() {

@@ -104,7 +104,7 @@ if($action == 'getSummen') {
 
 if($action == 'getListe') {
 	$sql = 'SELECT r.spielID, r.spielerID, r.preis, t.name FROM (
-			SELECT s.typID, s.id AS spielID, e.spielerID, CASE WHEN gewinner THEN (CASE WHEN gew.anz = 1 THEN s.preis * 3 ELSE s.preis END)
+			SELECT s.typID, s.timestamp, s.id AS spielID, e.spielerID, CASE WHEN gewinner THEN (CASE WHEN gew.anz = 1 THEN s.preis * 3 ELSE s.preis END)
 			ELSE (CASE WHEN gew.anz = 3 THEN s.preis * -3 ELSE s.preis * -1 END) END AS preis
 			FROM ergebnis e
 			INNER JOIN spiele s ON e.spielID = s.id
@@ -115,6 +115,7 @@ if($action == 'getListe') {
 			GROUP BY spielID) gew ON e.spielID = gew.spielID
 			WHERE s.tischID = :id) r
 			INNER JOIN spieltyp t ON r.typID = t.ID
+			AND DATE(r.timestamp) = DATE(now())
 			ORDER BY spielID DESC';
 
 	$stmt = $db->prepare($sql);
@@ -126,5 +127,50 @@ if($action == 'getListe') {
 		$out['s'.$result['spielID']]['erg'][$result['spielerID']] = array('gewinn'  => $result['preis']);
 	}
 
+	echo json_encode($out);
+}
+
+if($action == 'getDayList') {
+
+	$sql = "SELECT DATE_FORMAT(r.timestamp,'%d-%m-%Y') AS tag, r.spielerID, SUM(r.preis) AS spieltagsgewinn
+	FROM (
+		SELECT s.typID, s.timestamp, s.id AS spielID, e.spielerID, CASE WHEN gewinner THEN (CASE WHEN gew.anz = 1 THEN s.preis * 3 ELSE s.preis END)
+		ELSE (CASE WHEN gew.anz = 3 THEN s.preis * -3 ELSE s.preis * -1 END) END AS preis
+		FROM ergebnis e
+		INNER JOIN spiele s ON e.spielID = s.id
+		INNER JOIN spieler sp ON e.spielerID = sp.id
+		INNER JOIN (
+		SELECT spielID, SUM(gewinner) AS anz
+		FROM ergebnis
+		GROUP BY spielID) gew ON e.spielID = gew.spielID
+		WHERE s.tischID = :id
+		) r
+	INNER JOIN spieltyp t ON r.typID = t.ID
+	GROUP BY  DAY(r.timestamp), r.spielerID
+	ORDER BY r.timestamp , spielerID";
+
+	$stmt = $db->prepare($sql);
+	$stmt->bindParam(':id', $id);
+	$stmt->execute();
+
+	$out = array();
+	$spieler = array();
+	while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		
+		if ( ! isset($spieler[ $result['spielerID'] ])) {
+ 		  $spieler[ $result['spielerID'] ] = 0;
+		}
+		
+		$spieler[ $result['spielerID'] ] += $result['spieltagsgewinn'];
+		$out[ $result['tag'] ][] = array('id' => $result['spielerID'], 'gewinn' => $spieler[  $result['spielerID'] ]);
+	
+	}
+	foreach($out as &$outLine) {
+		usort($outLine, function($a, $b) {
+			return $a['id'] - $b['id'];
+		});
+	}
+
+	$out = array_reverse($out);
 	echo json_encode($out);
 }
