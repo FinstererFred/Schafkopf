@@ -13,6 +13,31 @@ $provider = new DBProvider($db, $tablePrefix);
 $action = $_GET['action'];
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
+
+if($action == 'delete') {
+  $type = $_POST['type'];
+  $id = (int)$_POST['id'];
+  $mandator = $provider->getAllBy($type, array("id" => $id));
+  echo $provider->deleteObj($mandator);
+}
+
+if($action == 'new') {
+  $type = $_POST['type'];
+  $data = json_decode($_POST['data'],true);
+  $object = new $type();
+  $provider->updateFromArray($object,$data);
+  $resp = -1;
+  $resp = $provider->saveNewObj($object);
+
+  if($type == 'offer') {
+      $offer = $provider->getAllBy('offer', array('id' => $resp));
+      $offer->setAlternateURL('');
+      $resp = $provider->saveObject($offer);
+  }
+
+  echo true;
+}
+
 if($action == 'getTypen') {
 	$typen = $provider->getAllBy('spieltyp');
 
@@ -22,6 +47,21 @@ if($action == 'getTypen') {
 		$out[] = $typ->toArray();
 	}
 
+	echo json_encode($out);
+}
+
+
+if($action == 'getAllTische') {
+	$tische = $provider->getAllBy('tische');
+
+	$out = array();
+
+	if(!is_array($tische)) { $tische = array($tische); }
+
+	foreach($tische as $tisch) {
+		$out[] = $tisch->toArray();
+	}
+	$out = array('data' => $out);
 	echo json_encode($out);
 }
 
@@ -156,14 +196,14 @@ if($action == 'getDayList') {
 	$out = array();
 	$spieler = array();
 	while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-		
+
 		if ( ! isset($spieler[ $result['spielerID'] ])) {
  		  $spieler[ $result['spielerID'] ] = 0;
 		}
-		
+
 		$spieler[ $result['spielerID'] ] += $result['spieltagsgewinn'];
 		$out[ $result['tag'] ][] = array('id' => $result['spielerID'], 'gewinn' => $spieler[  $result['spielerID'] ]);
-	
+
 	}
 	foreach($out as &$outLine) {
 		usort($outLine, function($a, $b) {
@@ -173,4 +213,13 @@ if($action == 'getDayList') {
 
 	$out = array_reverse($out);
 	echo json_encode($out);
+}
+
+if($action == 'save') {
+  $data = json_decode($_POST['data'],true);
+  $type = $_POST['type'];
+  $object = $provider->getAllBy($type, array("id" => $data['id']));
+  $provider->updateFromArray($object,$data);
+
+  echo $provider->saveObject($object);
 }

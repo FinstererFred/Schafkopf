@@ -1,31 +1,39 @@
 <?php
 
-session_start();
-if(!isset($_SESSION['username'])) {
-	$smarty->assign('message','error');
-	$smarty->display('login.tpl');
-	exit;
-}
-include 'config/dbconfig.php';
+
+require '../smarty/Smarty.class.php';
+include 'config/sconfig.php';
+include '../controller/dbconfig.php';
+include '../controller/common.php';
+include '../controller/tische.php';
+include '../controller/spieler.php';
 
 
-$provider = new DBProvider($db);
+$provider = new DBProvider($db,'');
 
-$mandators = $provider->getAllBy('mandator');
+$tische = $provider->getAllBy('tische');
 
-$temp = array();
-if(!is_array($mandators)){
-	$temp = $mandators;
-	$mandators = array();
-	$mandators[] = $temp;
+if(!is_array($tische)){
+	$tische = array($tische);
 }
 
-foreach ($mandators as $key => $mandator) {
-  $mandator->setStartdate( date('d.m.Y', strtotime($mandator->getStartdate())) );
-  $mandator->setEnddate( date('d.m.Y', strtotime($mandator->getEnddate())) );
-  $out[] = $mandator->toArray();
+$out = array();
+foreach ($tische as $key => $tisch) {
+  $out[] = $tisch->toArray();
+}
+
+$spieler = $provider->getAllBy('spieler');
+
+if(!is_array($spieler)){
+	$spieler = array($spieler);
+}
+
+$out_spieler = array();
+foreach ($spieler as $key => $spieleR) {
+  $out_spieler[] = $spieleR->toArray();
 }
 
 $smarty->assign('objects', $out);
+$smarty->assign('spieler', $out_spieler);
 $smarty->assign('objectsJSON', json_encode($out));
-$smarty->display('mandators.tpl');
+$smarty->display('tische.tpl');

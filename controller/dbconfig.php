@@ -3,8 +3,8 @@
 $dbhost = 'localhost';
 $dbname = 'schafkopf';
 $dbuser = 'root';
-$dbpw = '';
-
+$dbpw = 'root';
+$tablePrefix = '';
 try
 {
 	// Connection-String erstellen

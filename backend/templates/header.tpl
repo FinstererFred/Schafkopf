@@ -10,7 +10,7 @@
       <meta name="description" content="">
       <meta name="author" content="">
 
-      <title>QR-Admin</title>
+      <title>Schafkopf-Admin</title>
       <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
       <link href="bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
       <link href="dist/css/timeline.css" rel="stylesheet">

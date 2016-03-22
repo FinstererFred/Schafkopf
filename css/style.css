@@ -30,3 +30,5 @@ input[type=radio] {position: relative; top:1px}
 
 .inputTable th { padding-bottom: 10px;}
 .doppelt input {margin-right:10px}
+
+.spielerID { display:none}

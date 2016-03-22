@@ -139,7 +139,7 @@
 				var out = '<tr><th width="130"></th>';
 				for(var i in data.spieler) {
 					spieler[data.spieler[i].id] = data.spieler[i];
-					out += "<th>"+data.spieler[i].kurz+" ("+data.spieler[i].id+")</th>";
+					out += "<th>"+data.spieler[i].kurz+" <span class=\"spielerID\">("+data.spieler[i].id+")</span></th>";
 				}
 				out += "</tr>";
 				$('#theader').html(out);
@@ -227,7 +227,7 @@
 
 				summe = summe / 100;
 
-				out +="<td align='right'>"+summe+" ("+i+")</td>";
+				out +="<td align='right'>"+summe.toFixed(2)+" <span class=\"spielerID\">("+i+")</span></td>";
 			}
 			out += '</tr>';
 		
@@ -250,7 +250,7 @@
 				for(var j in data[i]['erg'])
 				{
 		
-					out+='<td align="right">'+data[i]['erg'][j].gewinn+' ('+j+')</td>';
+					out+='<td align="right">'+data[i]['erg'][j].gewinn+' <span class="spielerID">('+j+')</span></td>';
 				}
 				out += '</tr>';
 			}
@@ -277,7 +277,7 @@
 						gewinn += offset[tisch.id][data[i][j].id];
 					}	
 					gewinn = gewinn / 100;
-					out+='<td align="right">'+gewinn+' ('+data[i][j].id+')</td>';
+					out+='<td align="right">'+gewinn.toFixed(2)+' <span class="spielerID">('+data[i][j].id+')</span></td>';
 				}
 				out += '</tr>';
 				
