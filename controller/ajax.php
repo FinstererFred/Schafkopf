@@ -50,6 +50,19 @@ if($action == 'getTypen') {
 	echo json_encode($out);
 }
 
+if($action == 'getAllSpieler') {
+	$spieler = $provider->getAllBy('spieler');
+
+	$out = array();
+
+	if(!is_array($spieler)) { $spieler = array($spieler); }
+
+	foreach($spieler as $_spieler) {
+		$out[] = $_spieler->toArray();
+	}
+	$out = array('data' => $out);
+	echo json_encode($out);
+}
 
 if($action == 'getAllTische') {
 	$tische = $provider->getAllBy('tische');
@@ -210,8 +223,9 @@ if($action == 'getDayList') {
 			return $a['id'] - $b['id'];
 		});
 	}
-
-	$out = array_reverse($out);
+	if(!isset($_GET['reverse'])) {
+		$out = array_reverse($out);
+	}
 	echo json_encode($out);
 }
 
@@ -222,4 +236,36 @@ if($action == 'save') {
   $provider->updateFromArray($object,$data);
 
   echo $provider->saveObject($object);
+}
+
+
+if($action == 'getChart') {
+	$sql = "SELECT r.spielID, r.preis, t.name as gameID FROM (
+			SELECT s.typID, s.timestamp, s.id AS spielID, e.spielerID, CASE WHEN gewinner THEN (CASE WHEN gew.anz = 1 THEN s.preis * 3 ELSE s.preis END)
+			ELSE (CASE WHEN gew.anz = 3 THEN s.preis * -3 ELSE s.preis * -1 END) END AS preis
+			FROM ergebnis e
+			INNER JOIN spiele s ON e.spielID = s.id
+			INNER JOIN spieler sp ON e.spielerID = sp.id
+			INNER JOIN (
+			SELECT spielID, SUM(gewinner) AS anz
+			FROM ergebnis
+			GROUP BY spielID) gew ON e.spielID = gew.spielID
+			WHERE s.tischID = :id) r
+			INNER JOIN spieltyp t ON r.typID = t.ID
+			and r.spielerID = :spielerID
+			ORDER BY spielID DESC";
+
+	$stmt = $db->prepare($sql);
+	$stmt->bindParam(':id', $id);
+	$spielerID = (int)$_GET['spielerID'];
+	$stmt->bindParam(':spielerID', $spielerID);
+	$stmt->execute();
+
+	$out = array();
+	$spieler = array();
+	while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		$out[] = $result;
+	}
+
+	echo json_encode($out);
 }

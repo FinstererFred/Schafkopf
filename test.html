@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Schafkopf</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
+
+	</head>
+<body style="padding:10px">
+
+
+	<div id="header">
+			<h2>Basic Usage</h2>
+		</div>
+
+		<div id="content">
+
+			<div class="demo-container">
+				<div id="placeholder" style="width: 850px;height: 450px;" class="demo-placeholder"></div>
+				<div id="placeholder2" style="width: 850px;height: 450px;" class="demo-placeholder"></div>
+			</div>
+		</div>
+
+<script src="js/jquery-2.2.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="backend/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+<script src="backend/bower_components/flot/jquery.flot.js"></script>
+<script src="backend/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+<script src="backend/bower_components/bootstrap-select-1.10.0/dist/js/bootstrap-select.min.js"></script>
+
+
+<script type="text/javascript">
+var d2 = [];
+	var offset = {1: {1:-25, 3:-1580, 4:860, 5:745}};
+
+	$(function() {
+		var d1 = [];
+		for (var i = 0; i < 14; i += 0.5) {
+			d1.push([i, Math.sin(i)]);
+		}
+
+		$.ajax({
+			url: 'controller/ajax.php',
+			data: {'action' : 'getChart', 'id' : 1, 'spielerID' : 1},
+			dataType: "json"
+		})
+		.done(function(data) {
+
+			for(var i in data) {
+				d2.push( [ i, data[i].preis, data[i].gameID] );
+			}
+
+			$.plot("#placeholder2", [ {data: d2 }],
+			{
+				series: {
+					lines: { show: true },
+					points: { show: true }
+				},
+				grid: {
+					hoverable: true, clickable: true,
+					markings: [ { color: '#ff0000', lineWidth: 1, yaxis: { from: 0, to: 0 } }, ]
+				}
+			});
+		});
+
+
+		$.ajax({
+			url: 'controller/ajax.php',
+			data: {'action' : 'getDayList', 'id' : 1, 'spielerID' : 1, 'reverse' : true},
+			dataType: "json"
+		})
+		.done(function(data) {
+			var sp = {};
+			var ins = 0;
+			var sptag = '';
+			for(var i in data) {
+				if(sptag != i) { ins++;}
+
+				if(typeof(sp[data[i][0].id]) == 'undefined') sp[data[i][0].id] = [];
+				if(typeof(sp[data[i][1].id]) == 'undefined') sp[data[i][1].id] = [];
+				if(typeof(sp[data[i][2].id]) == 'undefined') sp[data[i][2].id] = [];
+				if(typeof(sp[data[i][3].id]) == 'undefined') sp[data[i][3].id] = [];
+
+				var gewinn0 = data[i][0].gewinn + offset[1][data[i][0].id];
+				var gewinn1 = data[i][1].gewinn + offset[1][data[i][1].id];
+				var gewinn2 = data[i][2].gewinn + offset[1][data[i][2].id];
+				var gewinn3 = data[i][3].gewinn + offset[1][data[i][3].id];
+
+				sp[parseInt(data[i][0].id)].push( [ins, gewinn0] );
+				sp[parseInt(data[i][1].id)].push( [ins, gewinn1] );
+				sp[parseInt(data[i][2].id)].push( [ins, gewinn2] );
+				sp[parseInt(data[i][3].id)].push( [ins, gewinn3] );
+
+			}
+
+			$.plot("#placeholder", [ { data:sp[1],label:'MO'},{data:sp[3],label:'KF'}, {data:sp[4],label:'DH'}, {data:sp[5],label:'FS'} ],
+			{
+				series: {
+					lines: { show: true },
+					points: { show: true }
+				},
+				grid: {
+					hoverable: false, clickable: true,
+					markings: [ { color: '#ff0000', lineWidth: 1, yaxis: { from: 0, to: 0 } }, ]
+				},
+				xaxis:{
+          tickSize : 1
+       	}
+			});
+
+		});
+
+	});
+
+	$("#placeholder2").bind("plothover", function (event, pos, item) {
+			if (item) {
+					var spielName = d2[item.dataIndex][2];
+					var str = spielName +": "+ item.datapoint[1] + ' Cent';
+
+					$("#tooltip").html(str)
+						.css({top: item.pageY+5, left: item.pageX+10})
+						.fadeIn(200);
+				} else {
+					$("#tooltip").hide();
+				}
+
+		});
+
+
+	$("<div id='tooltip'></div>").css({
+				position: "absolute",
+				display: "none",
+				border: "1px solid #fdd",
+				padding: "2px",
+				"background-color": "#fee",
+				opacity: 0.80
+			}).appendTo("body");
+
+</script>
+
+
+
+</body>
+</html>

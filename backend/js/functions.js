@@ -20,6 +20,26 @@ String.prototype.lowercaseFirstLetter = function() {
 
 $(function() {
 
+	$('body').on('click','.fa-trash', function() {
+		var id = $(this).data('objectid');
+
+
+		if (confirm("Löschen?")) {
+			$.ajax({
+					url:'../controller/ajax.php?action=delete',
+					method: 'POST',
+					data: { 'type': objectType, 'id' : id }
+			} )
+			.done(function(data) {
+				if(data == true) {
+					table.ajax.reload();
+				} else {
+					alert(data);
+				}
+			 });
+		 }
+	});
+
 $('body').on('click','.fa-pencil', function() {
 	var objectID = $(this).data('objectid');
 

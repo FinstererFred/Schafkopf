@@ -3,12 +3,15 @@ require '../smarty/Smarty.class.php';
 include 'config/sconfig.php';
 include '../controller/dbconfig.php';
 include '../controller/common.php';
+include '../controller/tische.php';
+include '../controller/spieler.php';
+include '../controller/spiele.php';
 
-// session_start(); 
+// session_start();
 
-// if(!isset($_SESSION['username'])) { 
-	// $username = (isset($_POST["username"])) ? $_POST["username"] : ''; 
-	// $password = (isset($_POST["password"])) ? $_POST["password"] : ''; 
+// if(!isset($_SESSION['username'])) {
+	// $username = (isset($_POST["username"])) ? $_POST["username"] : '';
+	// $password = (isset($_POST["password"])) ? $_POST["password"] : '';
 
 	// if (isset($_GET['login'])){
 		// if (empty($username) OR empty($password)){
@@ -27,7 +30,7 @@ include '../controller/common.php';
 				// exit;
 			// }
 		// }
-	// }	
+	// }
 	// else {
 		// echo "XXX";
 		// echo "<br />Login Maske anzeigen";
@@ -35,9 +38,15 @@ include '../controller/common.php';
 	// }
 // }
 
-// $provider = new DBProvider($db);
+$provider = new DBProvider($db,'');
 
-// $merchants = $provider->getAllBy('merchant');
+$tische = $provider->getAllBy('tische');
+$spieler = $provider->getAllBy('spieler');
+$spiele = $provider->getAllBy('spiele');
+
+$smarty->assign('tischCount', count($tische));
+$smarty->assign('spieleCount', count($spiele));
+$smarty->assign('spielerCount', count($spieler));
 
 $smarty->display('dashboard.tpl');
 

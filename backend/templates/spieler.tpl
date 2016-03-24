@@ -3,7 +3,7 @@
 {block name="page-content"}
 <div class="row">
   <div class="col-lg-12">
-    <h1 class="page-header">Tische</h1>
+    <h1 class="page-header">Spieler</h1>
   </div>
 </div>
 
@@ -21,10 +21,8 @@
                             <tr>
                                 <th>id</th>
                                 <th>Name</th>
-                                <th>Sp1</th>
-                                <th>Sp2</th>
-                                <th>Sp3</th>
-                                <th>Sp4</th>
+                                <th>Kurz</th>
+                                <th>password</th>
                                 <th width="20"></th>
                             </tr>
                         </thead>
@@ -34,7 +32,7 @@
             </div>
             <!-- /.panel-body -->
         </div>
-        <button type="button" class="btn btn-info" id="newObject">Neuen Tisch anlegen</button>
+        <button type="button" class="btn btn-info" id="newObject">Neuen Spieler anlegen</button>
 
         <!-- /.panel -->
     </div>
@@ -49,7 +47,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Neuer Tisch</h4>
+        <h4 class="modal-title">Neuer Spieler</h4>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -64,59 +62,20 @@
             </div>
 
 						<div class="form-group row">
-							<label for="inputType" class="col-sm-3 form-control-label">Spieler 1</label>
+							<label for="inputEmail3" class="col-sm-3 form-control-label">Kurz</label>
 							<div class="col-sm-8">
-								<select id="inputSp1" class="selectpicker">
-									{foreach $spieler as $spieleR}
-										<option value="{$spieleR.id}">{$spieleR.name}</option>
-									{/foreach}
-								</select>
+								<input type="text" class="form-control" id="inputKurz" placeholder="Kurz">
 							</div>
 						</div>
 
 						<div class="form-group row">
-							<label for="inputType" class="col-sm-3 form-control-label">Spieler 2</label>
+							<label for="inputEmail3" class="col-sm-3 form-control-label">Password</label>
 							<div class="col-sm-8">
-								<select id="inputSp2" class="selectpicker">
-									{foreach $spieler as $spieleR}
-										<option value="{$spieleR.id}">{$spieleR.name}</option>
-									{/foreach}
-								</select>
+								<input type="text" class="form-control" id="inputPassword" placeholder="Passwort">
 							</div>
 						</div>
 
-						<div class="form-group row">
-							<label for="inputType" class="col-sm-3 form-control-label">Spieler 3</label>
-							<div class="col-sm-8">
-								<select id="inputSp3" class="selectpicker">
-									{foreach $spieler as $spieleR}
-										<option value="{$spieleR.id}">{$spieleR.name}</option>
-									{/foreach}
-								</select>
-							</div>
-						</div>
 
-						<div class="form-group row">
-							<label for="inputType" class="col-sm-3 form-control-label">Spieler 4</label>
-							<div class="col-sm-8">
-								<select id="inputSp4" class="selectpicker">
-									{foreach $spieler as $spieleR}
-										<option value="{$spieleR.id}">{$spieleR.name}</option>
-									{/foreach}
-								</select>
-							</div>
-						</div>
-
-						<div class="form-group row">
-							<label for="inputType" class="col-sm-3 form-control-label">Verantwortlicher</label>
-							<div class="col-sm-8">
-								<select id="inputVerantwortlicher" class="selectpicker">
-									{foreach $spieler as $spieleR}
-										<option value="{$spieleR.id}">{$spieleR.name}</option>
-									{/foreach}
-								</select>
-							</div>
-						</div>
 
           </form>
 
@@ -135,8 +94,7 @@
 <script type="text/javascript">
   var objects = {$objectsJSON};
   var activeObject = -1;
-  var objectType = 'tische';
-	var spieler = {$objectsSpieler};
+  var objectType = 'spieler';
 </script>
 {/block}
 
@@ -147,20 +105,18 @@
           language: {
                 "url": "bower_components/datatables/media/js/German.json"
             },
-       ajax: "../controller/ajax.php?action=getAllTische",
+       ajax: "../controller/ajax.php?action=getAllSpieler",
        responsive: true,
        columnDefs: [
-         { targets: [4, 5], sortable: false},
+         { targets: [2], sortable: false},
          { targets: [0], visible:false}
 
        ],
        columns: [
           { data: "id"},
           { data: "name" },
-          { data: "sp1", render: function ( row, data, index ) { 	return spieler[findSpielerById(row)].name; } },
-          { data: "sp2", render: function ( row, data, index ) { 	return spieler[findSpielerById(row)].name; } },
-          { data: "sp3", render: function ( row, data, index ) { 	return spieler[findSpielerById(row)].name; } },
-          { data: "sp4", render: function ( row, data, index ) { 	return spieler[findSpielerById(row)].name; } },
+          { data: "kurz" },
+          { data: "password" },
           {
               data: null,
               className: "center",
@@ -196,20 +152,6 @@
     	    orientation: "bottom",
            autoclose: true
     	});
-
-			function renderSpieler(row,data,index) {
-					var spielerIndex = findSpielerById(row);
-
-
-			}
-
-			function findSpielerById(id) {
-				for(var i in spieler) {
-						if(spieler[i].id == id) {
-							return i;
-						}
-				}
-			}
 
   </script>
 {/block}

@@ -5,14 +5,16 @@ class spieler extends qrClass
 	private $id;
   private $name;
 	private $kurz;
+	private $password;
   public $sorting;
-	
 
-	function __construct($id = NULL, $name = NULL, $kurz = NULL)
+
+	function __construct($id = NULL, $name = NULL, $kurz = NULL, $password = NULL)
 	{
 		$this->id = $id;
 		$this->name = $name;
 		$this->kurz = $kurz;
+		$this->password = $password;
     $this->sorting = 'kurz';
 	}
 
@@ -28,6 +30,10 @@ class spieler extends qrClass
     return $this->kurz;
   }
 
+	public function getPassword() {
+    return $this->password;
+  }
+
   public function setId($id) {
     $this->id = $id;
   }
@@ -38,5 +44,10 @@ class spieler extends qrClass
 
   public function setKurz($kurz) {
     $this->kurz = $kurz;
-  } 
+  }
+
+	public function setPassword($password) {
+    $this->password = $password;
+  }
+
 }

@@ -14,15 +14,15 @@
 				<div class="panel-heading">
 					<div class="row">
 						<div class="col-xs-3">
-							<i class="fa fa-map fa-5x"></i>
+							<i class="fa fa-th fa-5x"></i>
 						</div>
 						<div class="col-xs-9 text-right">
-							<div class="huge">3</div>
+							<div class="huge">{$tischCount}</div>
 							<div>Tische</div>
 						</div>
 					</div>
 				</div>
-				<a href="mandators.php">
+				<a href="tische.php">
 					<div class="panel-footer">
 						<span class="pull-left">Details</span>
 						<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -36,15 +36,15 @@
 				<div class="panel-heading">
 					<div class="row">
 						<div class="col-xs-3">
-							<i class="fa fa-shopping-cart fa-5x"></i>
+							<i class="fa fa-users fa-5x"></i>
 						</div>
 						<div class="col-xs-9 text-right">
-							<div class="huge">6</div>
+							<div class="huge">{$spielerCount}</div>
 							<div>Spieler</div>
 						</div>
 					</div>
 				</div>
-				<a href="merchants.php">
+				<a href="spieler.php">
 					<div class="panel-footer">
 						<span class="pull-left">Details</span>
 						<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -53,6 +53,7 @@
 				</a>
 			</div>
 		</div>
+		<!--
 		<div class="col-lg-6">
 			<div class="panel panel-yellow">
 				<div class="panel-heading">
@@ -61,7 +62,7 @@
 							<i class="fa fa-qrcode fa-5x"></i>
 						</div>
 						<div class="col-xs-9 text-right">
-							<div class="huge">5</div>
+							<div class="huge">{$tischCount}</div>
 							<div>Spielarten</div>
 						</div>
 					</div>
@@ -75,15 +76,16 @@
 				</a>
 			</div>
 		</div>
+		-->
 		<div class="col-lg-6">
 			<div class="panel panel-red">
 				<div class="panel-heading">
 					<div class="row">
 						<div class="col-xs-3">
-							<i class="fa fa-gift fa-5x"></i>
+							<i class="fa fa-trophy fa-5x"></i>
 						</div>
 						<div class="col-xs-9 text-right">
-							<div class="huge">9802</div>
+							<div class="huge">{$spieleCount}</div>
 							<div>Spiele</div>
 						</div>
 					</div>
@@ -97,12 +99,12 @@
 				</a>
 			</div>
 		</div>
-		
+
 	</div>
 
-
+<!--
 	<div class="col-lg-4 col-md-12">
-	
+
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<i class="fa fa-pie-chart fa-fw"></i> Übersicht Händler je Aktion
@@ -113,9 +115,9 @@
 			</div>
 			<!-- /.panel-body -->
 		</div>
-	
-	</div>
 
+	</div>
+-->
 </div>
 
 
