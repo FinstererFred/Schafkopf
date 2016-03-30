@@ -32,3 +32,9 @@ input[type=radio] {position: relative; top:1px}
 .doppelt input {margin-right:10px}
 
 .spielerID { display:none}
+
+.winner { font-weight: bold;}
+
+.deleteGame { color: red; cursor: pointer; }
+.popover-content { color: red; cursor: pointer; }
+.popover-content:hover { text-decoration: underline; }

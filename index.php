@@ -4,6 +4,7 @@
 	<meta charset="utf-8" />
 	<title>Schafkopf</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="backend/bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
 	
 	</head>
@@ -141,6 +142,7 @@
 					spieler[data.spieler[i].id] = data.spieler[i];
 					out += "<th>"+data.spieler[i].kurz+" <span class=\"spielerID\">("+data.spieler[i].id+")</span></th>";
 				}
+				out += '<th width="20px"></th>';
 				out += "</tr>";
 				$('#theader').html(out);
 
@@ -205,6 +207,7 @@
 
 			});
 		});
+		
 	});
 
 	function getSumme() {
@@ -229,6 +232,7 @@
 
 				out +="<td align='right'>"+summe.toFixed(2)+" <span class=\"spielerID\">("+i+")</span></td>";
 			}
+			out += '<td></td>';
 			out += '</tr>';
 		
 			$('#summen').html(out);
@@ -249,13 +253,31 @@
 				out += '<tr><td>'+data[i]['name']+'</td>';
 				for(var j in data[i]['erg'])
 				{
-		
-					out+='<td align="right">'+data[i]['erg'][j].gewinn+' <span class="spielerID">('+j+')</span></td>';
+					class_name = 'loser';
+					if (data[i]['erg'][j].gewinn > 0) { class_name = 'winner'; }
+					out+='<td align="right" class="'+class_name+'">'+data[i]['erg'][j].gewinn+' <span class="spielerID">('+j+')</span></td>';
 				}
+				out += '<td><a href="#" data-toggle="popover" data-content="Löschen" class="deleteGame" data-id="'+i+'"><i class="fa fa-close"></i></a></td>';
 				out += '</tr>';
 			}
 			$('#tbody').html(out);
+			
+			$('[data-toggle="popover"]').popover(); 
+			$('.deleteGame').click(function() {
+				gameID = parseInt($(this).data('id').replace('s', ''));
+				$('.popover-content').click(function() {
+					$.ajax({
+						url: 'controller/ajax.php?action=deleteGame',
+						data: { 'id' : gameID, 'rnd' : Math.random() },
+						dataType:'json'
+					})
+					getListe();
+					getSumme();
+				});
+			});
+			
 		});
+
 
 	}
 

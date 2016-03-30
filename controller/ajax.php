@@ -131,6 +131,15 @@ if($action == 'saveGame') {
 
 }
 
+if($action == 'deleteGame') {
+	$sql = "DELETE FROM ".$tablePrefix."ergebnis WHERE spielID = :id;
+			DELETE FROM ".$tablePrefix."spiele WHERE id = :id";
+	$stmt = $db->prepare($sql);
+	$stmt->bindParam(':id', $id);
+	$stmt->execute();
+	echo json_encode($out);
+}
+
 if($action == 'getSummen') {
 	$sql = "SELECT sum(preis) as stand, spielerID from (
 		SELECT e.spielerID, CASE WHEN gewinner THEN (CASE WHEN gew.anz = 1 THEN s.preis * 3 ELSE s.preis END)
@@ -269,3 +278,4 @@ if($action == 'getChart') {
 
 	echo json_encode($out);
 }
+
