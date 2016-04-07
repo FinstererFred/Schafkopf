@@ -1,11 +1,11 @@
 <?php
-require '../smarty/Smarty.class.php';
-include 'config/sconfig.php';
-include '../controller/dbconfig.php';
-include '../controller/common.php';
-include '../controller/tische.php';
-include '../controller/spieler.php';
-include '../controller/spiele.php';
+require 'smarty/Smarty.class.php';
+include 'backend/config/sconfig.php';
+include 'controller/dbconfig.php';
+include 'controller/common.php';
+include 'controller/tische.php';
+include 'controller/spieler.php';
+include 'controller/spiele.php';
 
 $smarty->assign('message','');
 session_start();

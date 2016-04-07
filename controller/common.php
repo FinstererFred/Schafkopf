@@ -259,11 +259,24 @@ function convertToWindowsCharset($string) {
 function LoginDBCheck($db, $username, $password) {
 	$password = md5($password);
 
-	$sql = "SELECT user.* FROM ".$this->tablePrefix."spieler WHERE kurz = :name AND password = :password";
+	$sql = "SELECT * FROM spieler WHERE kurz = :name AND password = :password";
 	$stmt = $db->prepare($sql);
-	$stmt->bindParam(':name', $username);
+	$user = strtoupper($username);
+	$stmt->bindParam(':name', $user );
 	$stmt->bindParam(':password', $password);
 	$stmt->execute();
 	$count = $stmt->rowCount();
-	return $count;
+	
+	if($count == 0) {
+		return false;	
+	} else {
+	
+		while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$user = array('id' => $result['id'], 'name' => $result['name'], 'kurz' => $result['kurz']);
+		}
+		$_SESSION['user'] = $user;
+		return true;
+	}
+
+	
 }

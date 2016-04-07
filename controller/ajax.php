@@ -79,7 +79,7 @@ if($action == 'getAllTische') {
 }
 
 if($action == 'getTische') {
-	$tische = $provider->getAllBy('tische', array('verantwortlicher' => $id));
+	$tische = $provider->getAllBy('tische');
 
 	$out = array();
 
@@ -137,6 +137,7 @@ if($action == 'deleteGame') {
 	$stmt = $db->prepare($sql);
 	$stmt->bindParam(':id', $id);
 	$stmt->execute();
+	$out = true;
 	echo json_encode($out);
 }
 

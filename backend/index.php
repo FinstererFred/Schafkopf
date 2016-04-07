@@ -7,36 +7,22 @@ include '../controller/tische.php';
 include '../controller/spieler.php';
 include '../controller/spiele.php';
 
-// session_start();
+session_start();
 
-// if(!isset($_SESSION['username'])) {
-	// $username = (isset($_POST["username"])) ? $_POST["username"] : '';
-	// $password = (isset($_POST["password"])) ? $_POST["password"] : '';
+if(!isset($_SESSION['user'])) 
+{
+	$username = (isset($_POST["username"])) ? $_POST["username"] : '';
+	$password = (isset($_POST["password"])) ? $_POST["password"] : '';
+	
+	$message = '';
 
-	// if (isset($_GET['login'])){
-		// if (empty($username) OR empty($password)){
-			// echo "fehler";
-			// echo "<br />Login Maske anzeigen";
-			// exit;
-		// }
-		// else {
-			// $count = LoginDBCheck($db, $username, $password);
-			// if ($count >= 1) {
-				// $_SESSION['username'] = $username;
-			// }
-			// else {
-				// echo "fehler";
-				// echo "<br />Login Maske anzeigen";
-				// exit;
-			// }
-		// }
-	// }
-	// else {
-		// echo "XXX";
-		// echo "<br />Login Maske anzeigen";
-		// exit;
-	// }
-// }
+	if($username != '' && $password != '' && !LoginDBCheck($db, $username, $password)) {
+		$message = 'error';
+		$smarty->assign('message', $message);
+		$smarty->display('login.tpl');		
+		exit;	
+	} 
+}
 
 $provider = new DBProvider($db,'');
 
