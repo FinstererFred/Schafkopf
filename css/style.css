@@ -38,3 +38,5 @@ input[type=radio] {position: relative; top:1px}
 .deleteGame { color: red; cursor: pointer; }
 .popover-content { color: red; cursor: pointer; }
 .popover-content:hover { text-decoration: underline; }
+.showDayDetail { cursor: pointer}
+.spielName {background-color:pink;}

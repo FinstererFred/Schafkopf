@@ -166,6 +166,8 @@ if($action == 'getSummen') {
 }
 
 if($action == 'getListe') {
+	$date = isset($_GET['date']) ? $_GET['date'] : '';
+
 	$sql = 'SELECT r.spielID, r.spielerID, r.preis, t.name FROM (
 			SELECT s.typID, s.timestamp, s.id AS spielID, e.spielerID, CASE WHEN gewinner THEN (CASE WHEN gew.anz = 1 THEN s.preis * 3 ELSE s.preis END)
 			ELSE (CASE WHEN gew.anz = 3 THEN s.preis * -3 ELSE s.preis * -1 END) END AS preis
@@ -177,12 +179,25 @@ if($action == 'getListe') {
 			FROM ergebnis
 			GROUP BY spielID) gew ON e.spielID = gew.spielID
 			WHERE s.tischID = :id) r
-			INNER JOIN spieltyp t ON r.typID = t.ID
-			AND DATE(r.timestamp) = DATE(now())
-			ORDER BY spielID DESC';
+			INNER JOIN spieltyp t ON r.typID = t.ID';
+	if(!empty($date)) {
+		$sql .= ' AND DATE(r.timestamp) = DATE(:date)';
+	} else {
+		$sql .= ' AND DATE(r.timestamp) = DATE(now())';
+	}
+
+	$sql .=	' ORDER BY spielID DESC';
+
+
 
 	$stmt = $db->prepare($sql);
+	
 	$stmt->bindParam(':id', $id);
+	
+	if(!empty($date)) {
+		$stmt->bindParam(':date', $date);
+	}
+
 	$stmt->execute();
 	$out = array();
 	while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {

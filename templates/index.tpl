@@ -1,15 +1,15 @@
 {include file='header.tpl'}
 
 {block name="page-content"}
-<a href="logout.php">logout</a>
+
 <div>
     <div class="col-md-6 col-centered" >
     	<div class="row">
-    		<div class="col-md-6 vcenter"><h2>Schafkopf</h2></div><!--
-    	--><div class="col-md-6 text-right vcenter">
+    		<div class="col-md-6 vcenter"><h2>Schafkopf</h2></div><div class="col-md-6 text-right vcenter">
 				<select id="tische">
 					<option>Tisch auswählen</option>
 				</select>
+				<a href="logout.php">logout</a>
     		</div>
     	</div>
 
@@ -87,6 +87,8 @@
 	var tisch;
 	var typen;
 	var loggedinUser = {$loggedinUser};
+	var offen = '';
+
 {literal}
 	var offset = {1: {1:-25, 3:-1580, 4:860, 5:745}};
 
@@ -149,8 +151,12 @@
 				getListe();
 				getSumme();
 				getDayList();
+				shortCuts();
 			});
-		});
+
+		
+		
+	});
 
 		$('#spieler').on('click', 'li', function() {
 			$(this).toggleClass('gewinner');
@@ -190,14 +196,47 @@
 				if(data === 'ok') {
 					$('#spieler li').removeClass('gewinner');
 					$('#kosten').val('');
+					$('#textarea').blur();
 					getListe();
 					getSumme();
 					$('.doppelt input:checked:last').prop('checked',false);
 				}
-
 			});
 		});
 		
+
+		$('#tbody2').on('click', '.showDayDetail', function()  {
+			var _date = $(this).data('date')
+
+			$('.hideMe').remove();
+			
+			if(offen == _date ) {
+				offen = '';
+				return;
+			}
+
+			var that = $(this);
+			$.ajax({
+				url: 'controller/ajax.php?action=getListe',
+				data: { 'id' : $('#tische').val(), 'rnd' : Math.random(), 'date': $(this).data('date') },
+				dataType:'json'
+			})
+			.done(function(data) {
+				var out = '';
+				for(var i in data) {
+					out += '<tr class="hideMe"><td class="spielName">'+data[i]['name']+'</td>';
+					for(var j in data[i]['erg'])
+					{
+						class_name = 'loser';
+						if (data[i]['erg'][j].gewinn > 0) { class_name = 'winner'; }
+						out+='<td align="right" class="'+class_name+'">'+data[i]['erg'][j].gewinn+' <span class="spielerID">('+j+')</span></td>';
+					}
+					out += '</tr>';
+				}
+				$(out).insertAfter( $(that).parent() );
+				offen = _date;
+			});
+		});			
 	});
 
 	function getSumme() {
@@ -284,7 +323,8 @@
 			var out = '';
 			for(var i in data) {
 
-				out += '<tr><td>'+i+'</td>';
+
+				out += '<tr><td class="showDayDetail" data-date="'+formatDate(i)+'">'+i+'</td>';
 				for(var j in data[i])
 				{
 					gewinn = data[i][j].gewinn;
@@ -313,6 +353,76 @@
 		return year+'-'+(monthIndex+1)+'-'+day+' '+hours+':'+minutes+':'+seconds;
 	}
 
+	function formatDate(date) {
+		date = date.split('-');
+		return date[2]+'.'+date[1]+'.'+date[0];
+	}
+
+	function shortCuts() {
+		$('body').off();
+
+		$('body').keyup(function(e){
+			console.log(e.keyCode);
+			if(e.keyCode == 16) {
+				$('.doppelt input:not(:checked):first').prop('checked',true);
+				return false;
+			}
+
+			if(e.keyCode == 49) {
+
+				if(!$("#kosten").is(":focus")) {
+					$('#spielTyp li:nth-child(1) input').prop('checked',true);
+
+				} else { consoel.log('wo'); }
+			}
+
+			if(e.keyCode == 50) {
+				if(!$("#kosten").is(":focus")) {
+					$('#spielTyp li:nth-child(2) input').prop('checked',true);
+					
+				}
+			}
+
+			if(e.keyCode == 51) {
+				if(!$("#kosten").is(":focus")) {
+					$('#spielTyp li:nth-child(3) input').prop('checked',true);
+				}
+			}
+
+			if(e.keyCode == 52) {
+				if(!$("#kosten").is(":focus")) {
+					$('#spielTyp li:nth-child(4) input').prop('checked',true);
+
+				}
+			}
+
+			if(e.keyCode == 53) {
+				if(!$("#kosten").is(":focus")) {
+					$('#spielTyp li:nth-child(5) input').prop('checked',true);
+				}
+			}
+
+			if(e.keyCode == 81) {
+				$('#spieler li:nth-child(1)').toggleClass('gewinner');
+			}
+
+			if(e.keyCode == 87) {
+				$('#spieler li:nth-child(2)').toggleClass('gewinner');
+			}
+
+			if(e.keyCode == 69) {
+				$('#spieler li:nth-child(3)').toggleClass('gewinner');
+			}
+
+			if(e.keyCode == 82) {
+				$('#spieler li:nth-child(4)').toggleClass('gewinner');
+			}
+
+			if(e.keyCode == 65) {
+				$('#kosten').focus();
+			}
+		});
+	}
 {/literal}
 </script>
 
