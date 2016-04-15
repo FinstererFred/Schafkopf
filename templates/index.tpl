@@ -72,15 +72,23 @@
 				</table>
 			</div>
 		</div>
+		<br/>
+		<div class="row">
+			<div class="col-md-12">
+			<button onclick="doGraf()" >der Graf</button><br/>
+			<div id="placeholder" style="width: 800px;height: 450px;" class="demo-placeholder"></div>
+			</div>
+		</div>
 	</div>
 </div>
+
 
 <script src="js/jquery-2.2.1.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="backend/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
 <script src="backend/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
 <script src="backend/bower_components/bootstrap-select-1.10.0/dist/js/bootstrap-select.min.js"></script>
-
+<script src="backend/bower_components/flot/jquery.flot.js"></script>
 
 <script type="text/javascript">
 	var spieler=[];
@@ -121,42 +129,8 @@
 		});
 
 		$('#tische').on('change', function() {
-			$.ajax({
-				url: 'controller/ajax.php',
-				data: {'action' : 'getTisch', 'id' : $(this).val(), 'rnd' : Math.random() },
-				dataType: "json"
-			})
-			.done(function(data) {
-
-				data = data[0];
-				var out = '<tr><th width="130"></th>';
-				for(var i in data.spieler) {
-					spieler[data.spieler[i].id] = data.spieler[i];
-					out += "<th>"+data.spieler[i].kurz+" <span class=\"spielerID\">("+data.spieler[i].id+")</span></th>";
-				}
-				out += '<th width="20px"></th>';
-				out += "</tr>";
-				$('#theader').html(out);
-
-				tisch = data.tisch;
-
-				var outSpieler = '';
-				outSpieler+= '<li data-id="'+spieler[tisch.sp1].id+'">'+spieler[tisch.sp1].kurz+'</li>';
-				outSpieler+= '<li data-id="'+spieler[tisch.sp2].id+'">'+spieler[tisch.sp2].kurz+'</li>';
-				outSpieler+= '<li data-id="'+spieler[tisch.sp3].id+'">'+spieler[tisch.sp3].kurz+'</li>';
-				outSpieler+= '<li data-id="'+spieler[tisch.sp4].id+'">'+spieler[tisch.sp4].kurz+'</li>';
-
-				$('#spieler').html(outSpieler);
-
-				getListe();
-				getSumme();
-				getDayList();
-				shortCuts();
-			});
-
-		
-		
-	});
+			getTisch($(this).val());
+		});
 
 		$('#spieler').on('click', 'li', function() {
 			$(this).toggleClass('gewinner');
@@ -196,7 +170,7 @@
 				if(data === 'ok') {
 					$('#spieler li').removeClass('gewinner');
 					$('#kosten').val('');
-					$('#textarea').blur();
+					$('#kosten').blur();
 					getListe();
 					getSumme();
 					$('.doppelt input:checked:last').prop('checked',false);
@@ -373,7 +347,7 @@
 				if(!$("#kosten").is(":focus")) {
 					$('#spielTyp li:nth-child(1) input').prop('checked',true);
 
-				} else { consoel.log('wo'); }
+				}
 			}
 
 			if(e.keyCode == 50) {
@@ -423,6 +397,116 @@
 			}
 		});
 	}
+
+	function doGraf() {
+		$.ajax({
+			url: 'controller/ajax.php',
+			data: {'action' : 'getDayList', 'id' : tisch.id, 'spielerID' : 0, 'reverse' : true},
+			dataType: "json"
+		})
+		.done(function(data) {
+			var sp = {};
+			var ins = 0;
+			var sptag = '';
+
+			for(var i in data) {
+				if(sptag != i) { ins++;}
+
+				if(typeof(sp[0]) == 'undefined') { sp[0] = {'id' : data[i][0].id, 'data' : [] }; }
+				if(typeof(sp[1]) == 'undefined') { sp[1] = {'id' : data[i][1].id, 'data' : [] }; }
+				if(typeof(sp[2]) == 'undefined') { sp[2] = {'id' : data[i][2].id, 'data' : [] }; }
+				if(typeof(sp[3]) == 'undefined') { sp[3] = {'id' : data[i][3].id, 'data' : [] }; }
+
+				var gewinn0 = data[i][0].gewinn + offset[1][data[i][0].id];
+				var gewinn1 = data[i][1].gewinn + offset[1][data[i][1].id];
+				var gewinn2 = data[i][2].gewinn + offset[1][data[i][2].id];
+				var gewinn3 = data[i][3].gewinn + offset[1][data[i][3].id];
+
+				sp[0].data.push( [ins, gewinn0] );
+				sp[1].data.push( [ins, gewinn1] );
+				sp[2].data.push( [ins, gewinn2] );
+				sp[3].data.push( [ins, gewinn3] );
+			}
+			
+			$.plot("#placeholder", [ 
+				{ data:sp[0].data, label: spieler[sp[0].id].kurz},
+				{ data:sp[1].data, label: spieler[sp[1].id].kurz}, 
+				{ data:sp[2].data, label: spieler[sp[2].id].kurz}, 
+				{ data:sp[3].data, label: spieler[sp[3].id].kurz} ],
+			{
+				series: {
+					lines: { show: true },
+					points: { show: true }
+				},
+				grid: {
+					hoverable: true, clickable: false,
+					markings: [ { color: '#ff0000', lineWidth: 1, yaxis: { from: 0, to: 0 } }, ]
+				},
+				xaxis:{
+          			tickSize : 1
+       			}
+			});
+		});
+	}
+
+	function getTisch(id) {
+			$.ajax({
+				url: 'controller/ajax.php',
+				data: {'action' : 'getTisch', 'id' : id, 'rnd' : Math.random() },
+				dataType: "json"
+			})
+			.done(function(data) {
+
+				data = data[0];
+				var out = '<tr><th width="130"></th>';
+				for(var i in data.spieler) {
+					spieler[data.spieler[i].id] = data.spieler[i];
+					out += "<th>"+data.spieler[i].kurz+" <span class=\"spielerID\">("+data.spieler[i].id+")</span></th>";
+				}
+				out += '<th width="20px"></th>';
+				out += "</tr>";
+				$('#theader').html(out);
+
+				tisch = data.tisch;
+
+				var outSpieler = '';
+				outSpieler+= '<li data-id="'+spieler[tisch.sp1].id+'">'+spieler[tisch.sp1].kurz+'</li>';
+				outSpieler+= '<li data-id="'+spieler[tisch.sp2].id+'">'+spieler[tisch.sp2].kurz+'</li>';
+				outSpieler+= '<li data-id="'+spieler[tisch.sp3].id+'">'+spieler[tisch.sp3].kurz+'</li>';
+				outSpieler+= '<li data-id="'+spieler[tisch.sp4].id+'">'+spieler[tisch.sp4].kurz+'</li>';
+
+				$('#spieler').html(outSpieler);
+
+				getListe();
+				getSumme();
+				getDayList();
+				shortCuts();
+			});
+	}
+
+
+	$("#placeholder").bind("plothover", function (event, pos, item) {
+			if (item) {
+				
+					var str = (item.datapoint[1] / 100).toFixed(2) + ' Euro';
+					
+					$("#tooltip").html(str)
+						.css({top: item.pageY+5, left: item.pageX+10})
+						.fadeIn(200);
+				} else {
+					$("#tooltip").hide();
+				}
+
+		});
+
+	$("<div id='tooltip'></div>").css({
+				position: "absolute",
+				display: "none",
+				border: "1px solid #fdd",
+				padding: "2px",
+				"background-color": "#fee",
+				opacity: 0.80
+			}).appendTo("body");
 {/literal}
 </script>
 
