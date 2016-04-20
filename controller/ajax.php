@@ -224,7 +224,7 @@ if($action == 'getDayList') {
 		WHERE s.tischID = :id
 		) r
 	INNER JOIN spieltyp t ON r.typID = t.ID
-	GROUP BY  DAY(r.timestamp), r.spielerID
+	GROUP BY DATE_FORMAT(r.timestamp,'%d-%m-%Y'), r.spielerID
 	ORDER BY r.timestamp , spielerID";
 
 	$stmt = $db->prepare($sql);
