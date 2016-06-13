@@ -3,7 +3,7 @@
 $dbhost = 'localhost';
 $dbname = 'schafkopf';
 $dbuser = 'root';
-$dbpw = 'root';
+$dbpw = '';
 $tablePrefix = '';
 try
 {

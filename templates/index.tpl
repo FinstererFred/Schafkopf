@@ -3,24 +3,24 @@
 {block name="page-content"}
 
 <div>
-    <div class="col-md-6 col-centered" >
+    <div class="col-lg-6 col-centered" >
     	<div class="row">
-    		<div class="col-md-6 vcenter"><h2>Schafkopf</h2></div><div class="col-md-6 text-right vcenter">
+    		<div class="col-md-6 vcenter"><img src="gfx/logo.png" /></div><div class="col-md-6 text-right vcenter">
 				<select id="tische">
-					<option>Tisch auswählen</option>
+					<option>Disch assucha</option>
 				</select>
 				<a href="logout.php">logout</a>
     		</div>
     	</div>
 
     	<div class="row">
-    		<div class="col-md-12 inputBox">
-    			<h3>Neues Spiel</h3>
+    		<div class="col-md-12 inputBox neuesSpiel">
+    			<h3>Neis Spui</h3>
     			<table width ="100%" class="inputTable">
     				<tr>
-    					<th>Spiel-Typ</th>
-    					<th width="160">Spieler</th>
-    					<th width="130">Kosten</th>
+    					<th>Spui-Typ</th>
+    					<th width="160">Spuia</th>
+    					<th width="130">Kosdn</th>
     					<th width="30"></th>
     					<th></th>
     					<th>Doppelt</th>
@@ -32,7 +32,7 @@
     					<td valign="top"><input type="tel" class="form-control" id="kosten" /></td>
     					<td valign="top"></td>
     					<td valign="top"><button type="button" id="save" class="btn btn-default btn-sm">
-							  <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Speichern
+							  <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Speichern 
 							</button>
 						</td>
 						<td valign="top" class="doppelt">
@@ -74,8 +74,8 @@
 		</div>
 		<br/>
 		<div class="row">
-			<div class="col-md-12">
-			<button onclick="doGraf()" >der Graf</button><br/>
+			<div class="col-md-12 graf">
+			<button onclick="doGraf()" >Graf ozeign</button><br/>
 			<div id="placeholder" style="width: 800px;height: 450px;" class="demo-placeholder"></div>
 			</div>
 		</div>

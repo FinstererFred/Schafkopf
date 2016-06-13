@@ -1,4 +1,4 @@
-body { padding-top:20px;}
+body { padding-top:20px; background: url('../gfx/holz.jpg'); background-attachment: fixed; }
 li { list-style: none; }
 ul { margin:0px;padding:0px;}
 
@@ -28,7 +28,8 @@ ul { margin:0px;padding:0px;}
 #summen td {background-color:#f7ff1f}
 input[type=radio] {position: relative; top:1px}
 
-.inputTable th { padding-bottom: 10px;}
+.inputBox.neuesSpiel { background: url('../gfx/bayern.jpg'); }
+.inputTable th { padding-bottom: 10px; }
 .doppelt input {margin-right:10px}
 
 .spielerID { display:none}
@@ -40,3 +41,6 @@ input[type=radio] {position: relative; top:1px}
 .popover-content:hover { text-decoration: underline; }
 .showDayDetail { cursor: pointer}
 .spielName {background-color:pink;}
+.graf {background-color:#fff;}
+
+.legend { left: 90px; position: absolute;}
