@@ -6,9 +6,10 @@
     <div class="col-lg-6 col-centered" >
     	<div class="row">
     		<div class="col-md-6 vcenter"><img src="gfx/logo.png" /></div><div class="col-md-6 text-right vcenter">
-				<select id="tische">
+				<!-- <select id="tische">
 					<option>Disch assucha</option>
 				</select>
+				-->
 				<a href="logout.php">logout</a>
     		</div>
     	</div>
@@ -40,6 +41,8 @@
     						<input  type="checkbox">
     						<input  type="checkbox">
     						<input  type="checkbox">
+    						<input  type="checkbox">
+    						<input  type="checkbox">
     					</td>
     				</tr>
 
@@ -54,7 +57,8 @@
 						<tbody id="tbody"></tbody>
 				</table>
 			</div>
-		</div><br/>
+		</div>
+		<!-- <br/>
 		<div class="row">
 			<div class="col-md-12 inputBox"><br/>
 				<table class="table table-striped table-bordered table-hover" id="dataTables2">
@@ -72,6 +76,7 @@
 				</table>
 			</div>
 		</div>
+		
 		<br/>
 		<div class="row">
 			<div class="col-md-12 graf">
@@ -79,6 +84,7 @@
 			<div id="placeholder" style="width: 800px;height: 450px;" class="demo-placeholder"></div>
 			</div>
 		</div>
+		-->
 	</div>
 </div>
 
@@ -92,10 +98,12 @@
 
 <script type="text/javascript">
 	var spieler=[];
+	var alleSpieler =[];
 	var tisch;
 	var typen;
 	var loggedinUser = {$loggedinUser};
 	var offen = '';
+	var spiele=[];
 
 {literal}
 	var offset = {1: {1:-25, 3:-1580, 4:860, 5:745}};
@@ -157,7 +165,7 @@
 
 			game.preis = $('#kosten').val();
 			game.typID = $('input[name=spieltyp]:checked').val();
-			game.tischID = $('#tische').val();
+			game.tischID = -1;
 			game.timestamp = getTime();
 
 			$.ajax({
@@ -167,7 +175,9 @@
 			})
 			.done(function(data) {
 
-				if(data === 'ok') {
+				spiele.push(data);
+
+				if(1 == 1) {
 					$('#spieler li').removeClass('gewinner');
 					$('#kosten').val('');
 					$('#kosten').blur();
@@ -176,6 +186,8 @@
 					$('.doppelt input:checked:last').prop('checked',false);
 				}
 			});
+
+
 		});
 		
 
@@ -211,12 +223,84 @@
 				offen = _date;
 			});
 		});			
+
+
+		/***** NEUS ****/
+		$.ajax({
+			url: 'controller/ajax.php',
+			data: {'action' : 'getAllSpieler', 'id' : loggedinUser},
+			dataType: "json"
+		})
+		.done(function(data) {
+			var out = '<option></option>';
+			alleSpieler = data['data'];
+
+			for(var i in alleSpieler) {
+
+				out+= '<option value="'+alleSpieler[i].id+'">'+alleSpieler[i].kurz+'</option>';
+			}
+			$('#sp1').append(out);
+			$('#sp2').append(out);
+			$('#sp3').append(out);
+			$('#sp4').append(out);
+		});
+
+		$('#myModal').modal({
+    backdrop: 'static',
+    keyboard: false
+},'show');
+
+		$('#spuiln').on('click', function() {
+			var sp1 = $('#sp1').val(); 
+			var sp2 = $('#sp2').val(); 
+			var sp3 = $('#sp3').val(); 
+			var sp4 = $('#sp4').val(); 
+
+			spieler[ alleSpieler[findSpielerIndex(sp1)].id ] = alleSpieler[findSpielerIndex(sp1)];
+			spieler[ alleSpieler[findSpielerIndex(sp2)].id ] = alleSpieler[findSpielerIndex(sp2)];
+			spieler[ alleSpieler[findSpielerIndex(sp3)].id ] = alleSpieler[findSpielerIndex(sp3)];
+			spieler[ alleSpieler[findSpielerIndex(sp4)].id ] = alleSpieler[findSpielerIndex(sp4)];
+
+			var out = '<tr><th width="130"></th>';
+			var outSpieler = '';
+
+			for(var i in spieler) {
+				
+				out += "<th>"+spieler[i].kurz+" <span class=\"spielerID\">("+spieler[i].id+")</span></th>";
+				outSpieler+= '<li data-id="'+spieler[i].id+'">'+spieler[i].kurz+'</li>';
+			}
+
+			out += '<th width="20px"></th>';
+			out += "</tr>";
+			$('#theader').html(out);
+
+			$('#spieler').html(outSpieler);
+			$('#myModal').modal('hide');
+
+			getSumme();
+			
+		})
 	});
 
+	function findSpielerIndex(spielerID) {
+		for (var i in alleSpieler) {
+			if  (alleSpieler[i].id == spielerID)
+				return i;
+		}
+	}
+
 	function getSumme() {
+		var _spieler = [];
+		for(var i in spieler)
+		{	
+			if(typeof(spieler[i]) != 'undefined')
+			{
+			_spieler.push(spieler[i].id);
+			}
+		}
 		$.ajax({
 			url: 'controller/ajax.php?action=getSummen',
-			data: { 'id' : $('#tische').val(), 'rnd' : Math.random() }, 
+			data: { 'id' : $('#tische').val(), 'rnd' : Math.random(), spieler : JSON.stringify(_spieler) }, 
 			dataType : 'json'
 		})
 		.done(function(data) {
@@ -227,9 +311,11 @@
 				
 				var summe = parseInt(data[i]);
 
+				/*
 				if(typeof(offset[tisch.id]) != 'undefined') {
 					summe += offset[tisch.id][i];
 				}
+				*/
 
 				summe = summe / 100;
 
@@ -247,7 +333,7 @@
 	function getListe() {
 		$.ajax({
 			url: 'controller/ajax.php?action=getListe',
-			data: { 'id' : $('#tische').val(), 'rnd' : Math.random() },
+			data: { 'id' : $('#tische').val(), 'rnd' : Math.random(), 'spiele' : JSON.stringify(spiele) },
 			dataType:'json'
 		})
 		.done(function(data) {
@@ -508,7 +594,50 @@
 				opacity: 0.80
 			}).appendTo("body");
 {/literal}
+
+
+
 </script>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Tisch zusammenstellen</h4>
+      </div>
+      <div class="modal-body">
+      <form class="form-horizontal">
+  			<div class="form-group">
+    			<label for="sp1" class="col-sm-2 control-label">Spieler 1</label>
+    			<div class="col-sm-8">
+      				 <select class="form-control" id="sp1"></select>
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label for="sp2" class="col-sm-2 control-label">Spieler 2</label>
+    			<div class="col-sm-8">
+      				 <select class="form-control" id="sp2"></select>
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label for="sp3" class="col-sm-2 control-label">Spieler 3</label>
+    			<div class="col-sm-8">
+      				 <select class="form-control" id="sp3"></select>
+    			</div>
+  			</div>
+  			<div class="form-group">
+    			<label for="sp4" class="col-sm-2 control-label">Spieler 4</label>
+    			<div class="col-sm-8">
+      				 <select class="form-control" id="sp4"></select>
+    			</div>
+  			</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="spuiln">Spuiln</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 {/block}
 {include file='footer.tpl'}

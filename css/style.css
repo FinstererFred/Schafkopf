@@ -20,9 +20,9 @@ ul { margin:0px;padding:0px;}
 	padding-bottom:20px;
 }
 
-.gewinner {background-color: green; color:white;}
+.gewinner {background-color: green!important; color:white;}
 
-#spieler  li {margin:5px; cursor:pointer;float: left; padding:10px; border:1px solid black; width: 60px; text-align:center;}
+#spieler  li {margin:5px; cursor:pointer;float: left; padding:10px; border:1px solid black; width: 60px; text-align:center; background-color:white}
 #spielTyp li input { margin-right:4px;}
 
 #summen td {background-color:#f7ff1f}
