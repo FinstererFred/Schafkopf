@@ -18,27 +18,6 @@ COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
 
-CREATE TABLE `tische` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`name` VARCHAR(255) NULL DEFAULT NULL,
-	`sp1` INT(11) NOT NULL,
-	`sp2` INT(11) NOT NULL,
-	`sp3` INT(11) NOT NULL,
-	`sp4` INT(11) NOT NULL,
-	PRIMARY KEY (`id`),
-	INDEX `FK_sp1` (`sp1`),
-	INDEX `FK_sp2` (`sp2`),
-	INDEX `FK_sp3` (`sp3`),
-	INDEX `FK_sp4` (`sp4`),
-	CONSTRAINT `FK_sp1` FOREIGN KEY (`sp1`) REFERENCES `spieler` (`id`),
-	CONSTRAINT `FK_sp2` FOREIGN KEY (`sp2`) REFERENCES `spieler` (`id`),
-	CONSTRAINT `FK_sp3` FOREIGN KEY (`sp3`) REFERENCES `spieler` (`id`),
-	CONSTRAINT `FK_sp4` FOREIGN KEY (`sp4`) REFERENCES `spieler` (`id`)
-)
-COLLATE='utf8_general_ci'
-ENGINE=InnoDB
-;
-
 CREATE TABLE `spiele` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`tischID` INT(11) NOT NULL,
@@ -48,7 +27,6 @@ CREATE TABLE `spiele` (
 	PRIMARY KEY (`id`),
 	INDEX `FK_tisch` (`tischID`),
 	INDEX `FK_typ` (`typID`),
-	CONSTRAINT `FK_tisch` FOREIGN KEY (`tischID`) REFERENCES `tische` (`id`),
 	CONSTRAINT `FK_typ` FOREIGN KEY (`typID`) REFERENCES `spieltyp` (`id`)
 )
 COLLATE='utf8_general_ci'
