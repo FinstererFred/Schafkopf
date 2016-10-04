@@ -58,6 +58,29 @@
 				</table>
 			</div>
 		</div>
+		
+		<div class="row">
+			<div class="col-md-12 inputBox">
+				<table width ="100%" class="table table-striped table-bordered table-hover">
+					<tr>
+						<th>Spuia</th>
+						<th>grod</th>
+						<th>gestern</th>
+						<th>vorgestern</th>
+						<th>vor 3 Dog</th>
+						<th>vor 4 Dog</th>
+						<th>vor 5 Dog</th>
+						<th>vor 6 Dog</th>
+						<th>vor 7 Dog</th>
+						<th>vor 8 Dog</th>
+						<th>vor 9 Dog</th>
+						<th>vor 10 Dog</th>
+					</tr>
+					<tbody id="uebersicht"></tbody>
+				</table>
+			</div>
+		</div>
+		
 		<!-- <br/>
 		<div class="row">
 			<div class="col-md-12 inputBox"><br/>
@@ -278,6 +301,8 @@
 			$('#myModal').modal('hide');
 
 			getSumme();
+			
+			getLastDayOverview();
 			
 		})
 	});
@@ -568,6 +593,37 @@
 				getDayList();
 				shortCuts();
 			});
+	}
+	
+	function getLastDayOverview() {
+	var _spieler = [];
+	var _out = '';
+		for(var i in spieler)
+		{	
+			if(typeof(spieler[i]) != 'undefined')
+			{
+			_spieler.push(spieler[i].id);
+			}
+		}	
+		$.ajax({
+			url: 'controller/ajax.php?action=getLastDayOverview',
+			data: { 'spieler' : JSON.stringify(_spieler), 'rnd' : Math.random() },
+			dataType:'json'
+		})
+		.done(function(data) {
+			for (var i in data){
+				
+				_out += '<tr>';
+				_out += '<td>'+alleSpieler[findSpielerIndex(i)].kurz+'</td>';
+				_out += '<td id="stand_aktuell_'+i+'">aktuell</td>';
+				for (var t in data[i]){
+					_out += '<td class="day_'+t+'">'+data[i][t]+'</td>';
+				}
+				_out += '</tr>';
+			}
+			$('#uebersicht').html(_out);
+			
+		});
 	}
 
 

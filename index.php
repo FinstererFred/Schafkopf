@@ -1,4 +1,5 @@
 <?php
+
 	require 'smarty/Smarty.class.php';
 	include 'backend/config/sconfig.php';
 	include 'controller/dbconfig.php';
