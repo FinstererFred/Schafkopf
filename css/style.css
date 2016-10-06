@@ -44,3 +44,6 @@ input[type=radio] {position: relative; top:1px}
 .graf {background-color:#fff;}
 
 .legend { left: 90px; position: absolute;}
+
+.overview { margin-top: 20px; }
+.overview .day_0 {background-color:#f7ff1f; font-weight: bold;}

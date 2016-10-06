@@ -59,24 +59,9 @@
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row overview">
 			<div class="col-md-12 inputBox">
-				<table width ="100%" class="table table-striped table-bordered table-hover">
-					<tr>
-						<th>Spuia</th>
-						<th>grod</th>
-						<th>gestern</th>
-						<th>vorgestern</th>
-						<th>vor 3 Dog</th>
-						<th>vor 4 Dog</th>
-						<th>vor 5 Dog</th>
-						<th>vor 6 Dog</th>
-						<th>vor 7 Dog</th>
-						<th>vor 8 Dog</th>
-						<th>vor 9 Dog</th>
-						<th>vor 10 Dog</th>
-					</tr>
-					<tbody id="uebersicht"></tbody>
+				<table width ="100%" class="table table-striped table-bordered table-hover" id="uebersicht">
 				</table>
 			</div>
 		</div>
@@ -300,8 +285,6 @@
 			$('#spieler').html(outSpieler);
 			$('#myModal').modal('hide');
 
-			getSumme();
-			
 			getLastDayOverview();
 			
 		})
@@ -331,9 +314,7 @@
 		.done(function(data) {
 			var out = '<tr><td><b>Summe</b></td>';
 			
-
 			for(var i in data) {
-				
 				var summe = parseInt(data[i]);
 
 				/*
@@ -343,8 +324,8 @@
 				*/
 
 				summe = summe / 100;
-
 				out +="<td align='right'>"+summe.toFixed(2)+" <span class=\"spielerID\">("+i+")</span></td>";
+				$('#uebersicht .spieler_'+i+'.day_0').html(summe.toFixed(2));
 			}
 			out += '<td></td>';
 			out += '</tr>';
@@ -596,8 +577,9 @@
 	}
 	
 	function getLastDayOverview() {
-	var _spieler = [];
-	var _out = '';
+		var _spieler = [];
+		var _out = '';
+		var _day = 0;
 		for(var i in spieler)
 		{	
 			if(typeof(spieler[i]) != 'undefined')
@@ -611,17 +593,35 @@
 			dataType:'json'
 		})
 		.done(function(data) {
+			_out += '<thead><tr><th></th>';
 			for (var i in data){
-				
+				_out += '<td><b>'+alleSpieler[findSpielerIndex(i)].kurz+'</b></td>';
+			}	
+			_out += '</thead><tbody>';
+			
+			for (day = 0; day <= 10; day++){
 				_out += '<tr>';
-				_out += '<td>'+alleSpieler[findSpielerIndex(i)].kurz+'</td>';
-				_out += '<td id="stand_aktuell_'+i+'">aktuell</td>';
-				for (var t in data[i]){
-					_out += '<td class="day_'+t+'">'+data[i][t]+'</td>';
+				if ( day == 0) {
+					_out += '<td width=130" class="day_0"><b>Aktuell</b></td>';
+				}
+				else if ( day == 1) {
+					_out += '<td width="130"><b>Heid</b></td>';
+				}
+				else {
+					show_day = day-1;
+					_out += '<td width="130"><b>vor '+show_day+' Dog</b></td>';
+				}
+				for (var i in data){
+					summe_out = data[i][day] ? (data[i][day]/100).toFixed(2) : '';
+					_out += '<td align="right" class="spieler_'+i+' day_'+day+'">'+summe_out+'</td>';
 				}
 				_out += '</tr>';
 			}
-			$('#uebersicht').html(_out);
+			_out += '</tbody>';
+			
+			$('#uebersicht').html(_out);			
+			
+			getSumme();
 			
 		});
 	}
