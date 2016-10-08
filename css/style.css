@@ -20,6 +20,12 @@ ul { margin:0px;padding:0px;}
 	padding-bottom:20px;
 }
 
+.marquee {
+ margin: auto;
+ border: solid 0px #CCCCCC;
+ color:#ffffff;
+ }
+
 .gewinner {background-color: green!important; color:white;}
 
 #spieler  li {margin:5px; cursor:pointer;float: left; padding:10px; border:1px solid black; width: 60px; text-align:center; background-color:white}

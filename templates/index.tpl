@@ -6,11 +6,13 @@
     <div class="col-lg-6 col-centered" >
     	<div class="row">
     		<div class="col-md-6 vcenter"><img src="gfx/logo.png" /></div><div class="col-md-6 text-right vcenter">
+    		<a href="logout.php">logout</a>
+			<marquee id="bannerinfo" class="marquee" onmouseover="this.stop();" onmouseout="this.start();" scrollamount="1"></marquee>
+			<img style="cursor: pointer;" src="gfx/refresh.png" alt="reload" onclick="getBannerInfo();" />
 				<!-- <select id="tische">
 					<option>Disch assucha</option>
 				</select>
 				-->
-				<a href="logout.php">logout</a>
     		</div>
     	</div>
 
@@ -286,6 +288,7 @@
 			$('#myModal').modal('hide');
 
 			getLastDayOverview();
+			getBannerInfo();
 			
 		})
 	});
@@ -335,6 +338,35 @@
 
 
 	}
+	
+	//BannerInfo
+	function getBannerInfo() {
+	$.ajax({
+		url: 'controller/ajax.php?action=getBannerSummen',
+		data: { 'id' : $('#tische').val(), 'rnd' : Math.random() }, 
+		dataType : 'json'
+	})
+	.done(function(data) 
+	{
+		var out = '<tr>';
+		
+		for(var i in data) 
+		{
+			var summe = parseInt(data[i]);
+			summe = summe / 100;
+			if (summe < 0)
+				out +="<td width='80'><b>"+i+": <font color='#FF0000'> "+summe.toFixed(2)+"</font></b></td>";
+			else if (summe > 0)
+				out +="<td width='80'><b>"+i+": <font color='#01DF01'>"+summe.toFixed(2)+"</font></b></td>";
+			else
+				out +="<td width='80'><b>"+i+": "+summe.toFixed(2)+"</b></td>";
+		}
+	
+		$('#bannerinfo').html(out);
+	});
+
+
+}
 
 	function getListe() {
 		$.ajax({

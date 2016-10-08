@@ -170,6 +170,32 @@ if($action == 'getSummen') {
 	echo json_encode($out);
 }
 
+if($action == 'getBannerSummen') {
+	$sql = "SELECT sum(preis) as stand, kurz from (
+		SELECT sp.kurz, CASE WHEN gewinner THEN (CASE WHEN gew.anz = 1 THEN s.preis * 3 ELSE s.preis END)
+		ELSE (CASE WHEN gew.anz = 3 THEN s.preis * -3 ELSE s.preis * -1 END) END AS preis
+		FROM ergebnis e
+		INNER JOIN spiele s ON e.spielID = s.id
+		INNER JOIN spieler sp ON e.spielerID = sp.id
+
+		INNER JOIN (
+		SELECT spielID, SUM(gewinner) AS anz
+		FROM ergebnis
+		GROUP BY spielID) gew ON e.spielID = gew.spielID
+		) result
+		group by kurz";
+	
+	$stmt = $db->prepare($sql);
+	$stmt->bindParam(':id', $id);
+	$stmt->execute();
+	$out = array();
+	while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		$out[$result['kurz']] = $result['stand'];
+	}
+
+	echo json_encode($out);
+}
+
 if($action == 'getListe') {
 	$date = isset($_GET['date']) ? $_GET['date'] : '';
 	$spiele = json_decode($_GET['spiele']);
