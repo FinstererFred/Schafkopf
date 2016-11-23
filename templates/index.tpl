@@ -415,7 +415,7 @@ function showGames()
 
 						$.each(allGames, function(i, game){
 							var price = game.preis;
-							if (game.typ == "Solo" || game.typ == "Geier" || game.typ == "Wenz")
+							if (game.gewinner && (game.typ == "Solo" || game.typ == "Geier" || game.typ == "Wenz"))
 								price = price * 3;
 							if (!game.gewinner)
 								price = price * -1;
