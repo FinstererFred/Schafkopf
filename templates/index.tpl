@@ -8,11 +8,8 @@
     		<div class="col-md-6 vcenter"><img src="gfx/logo.png" /></div><div class="col-md-6 text-right vcenter">
     		<a href="logout.php">logout</a>
 			<marquee id="bannerinfo" class="marquee" onmouseover="this.stop();" onmouseout="this.start();" scrollamount="1"></marquee>
-			<img style="cursor: pointer;" src="gfx/refresh.png" alt="reload" onclick="getBannerInfo();" />
-				<!-- <select id="tische">
-					<option>Disch assucha</option>
-				</select>
-				-->
+			<i class="reloader fa fa-refresh" onclick="getBannerInfo();"></i>
+			<i class="history fa fa-history" onclick="showGames();"></i>
     		</div>
     	</div>
 
@@ -368,6 +365,83 @@
 
 }
 
+function showGames()
+{
+	$.ajax({
+		url: 'controller/ajax.php',
+		data: {'action' : 'getAllSpieler', 'id' : loggedinUser},
+		dataType: "json"
+	})
+	.done(function(data) {
+		var out = '<option value=""></option>';
+		alleSpieler = data['data'];
+
+		for(var i in alleSpieler) {
+
+			out+= '<option value="'+alleSpieler[i].id+'">'+alleSpieler[i].kurz+'</option>';
+		}
+		
+		$("#historyPlayer").html(out);
+
+		$("#historyDiv").html("");
+
+		$("#historyPlayer").off().on("change", function(){
+			var id = $("#historyPlayer").val();
+			if (id == null || id == "" || id == undefined)
+				return;
+
+			$.ajax({
+				url: 'controller/ajax.php',
+				data: {'action' : 'getGameHistory', 'player' : id},
+				dataType: "json"
+			})
+			.done(function(data) {
+				if (data != null && data != undefined)
+				{
+					var games = {};
+					$.each(data, function(gameId, game){
+						var timestamp = game.timestamp;
+							if (games[timestamp.split(" ")[0]] == undefined)
+								games[timestamp.split(" ")[0]] = new Array();
+							games[timestamp.split(" ")[0]].push({ timestamp: timestamp, preis:game.preis, typ:game.typ, gewinner:game.gewinner });
+					});
+
+					$.each(games, function(day, allGames){
+						var table = "";
+						var date = new Date(day);
+						table += "<hr/><b>" + date.getDate() + "." + parseInt(date.getMonth()+1) + "." + date.getFullYear() + "</b><br/>";
+						table += "<div class='scroll'><table border='1'><thead><tr><th width='100'>Spiel</th><th style=\"text-align:right\" width='100'>Preis</th></thead><tbody>";
+
+						$.each(allGames, function(i, game){
+							var price = game.preis;
+							if (game.gewinner && (game.typ == "Solo" || game.typ == "Geier" || game.typ == "Wenz"))
+								price = price * 3;
+							if (!game.gewinner)
+								price = price * -1;
+
+							table += "<tr class='" + (game.gewinner ? "win" : "loose") + "'><td  width='100'>" + game.typ + "</td><td  width='100' style=\"text-align:right\">" + parseFloat(price/100).toFixed(2) + "</td></tr>";
+						});
+
+						table += "</tbody></table></div>";
+						$("#historyDiv").prepend(table);
+						var sum = 0.00;
+						$("#historyDiv").find("table").first().find("tbody tr").each(function(){
+							sum += parseFloat($(this).find("td").last().text().trim());
+						});
+						$("#historyDiv").find("table").first().find("tbody").append("<tr><td>Summe</td><td style=\"text-align:right\">" + sum.toFixed(2) + "</td></tr>");
+					});
+
+				}
+			});
+		});
+
+		$('#historyModal').modal({
+		    backdrop: 'static',
+		    keyboard: false
+		},'show');
+	});
+}
+
 	function getListe() {
 		$.ajax({
 			url: 'controller/ajax.php?action=getListe',
@@ -634,14 +708,14 @@
 			for (day = 0; day <= 10; day++){
 				_out += '<tr>';
 				if ( day == 0) {
-					_out += '<td width=130" class="day_0"><b>Aktuell</b></td>';
+					_out += '<td width=130" class="day_0"><b>Heid</b></td>';
 				}
 				else if ( day == 1) {
-					_out += '<td width="130"><b>Heid</b></td>';
+					_out += '<td width="130"><b>Gestern</b></td>';
 				}
 				else {
 					show_day = day-1;
-					_out += '<td width="130"><b>vor '+show_day+' Dog</b></td>';
+					_out += '<td width="130"><b>vor '+show_day+2+' Dog</b></td>';
 				}
 				for (var i in data){
 					summe_out = data[i][day] ? (data[i][day]/100).toFixed(2) : '';
@@ -725,6 +799,32 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="modal fade" id="historyModal" tabindex="-2" role="dialog" aria-labelledby="historyModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">History</h4>
+		    </div>
+		    <div class="modal-body">
+		    	<form class="form-horizontal">
+		    		<label for="historyPlayer" class="col-sm-2 control-label">Spieler</label>
+		    		<div class="col-sm-8">
+      					<select class="form-control" id="historyPlayer"></select>
+    				</div>
+    				<br/><div style="clear:both"></div>
+    				<div id="historyDiv">
+
+    				</div>
+		    	</form>
+		    </div>
+		    <div class="modal-footer">
+        		<button type="button" class="btn btn-primary" onclick="javascript:$('#historyModal').modal('hide');">Schließen</button>
+      		</div>
+		</div>
+	</div>
 </div>
 
 {/block}

@@ -14,7 +14,7 @@ ul { margin:0px;padding:0px;}
 }
 
 .inputBox {
-	border-radius: 10px;
+	border-radius: 3px;
 	background-color: #efefef;
 	border:1px solid #aeaeae;
 	padding-bottom:20px;
@@ -28,7 +28,8 @@ ul { margin:0px;padding:0px;}
 
 .gewinner {background-color: green!important; color:white;}
 
-#spieler  li {margin:5px; cursor:pointer;float: left; padding:10px; border:1px solid black; width: 60px; text-align:center; background-color:white}
+#spieler  li {margin:5px; cursor:pointer;float: left; padding:10px; border:1px solid black; border-radius:3px;  width: 60px; text-align:center; background-color:white}
+#spieler  li:hover { background-color: green!important; color:white; }
 #spielTyp li input { margin-right:4px;}
 
 #summen td {background-color:#f7ff1f}
@@ -53,3 +54,10 @@ input[type=radio] {position: relative; top:1px}
 
 .overview { margin-top: 20px; }
 .overview .day_0 {background-color:#f7ff1f; font-weight: bold;}
+
+i.reloader { color: white; font-size: 20px; cursor: pointer;  }
+i.history { color: white; font-size: 20px; cursor: pointer; margin-left: 5px; }
+
+div.scroll { max-height: 200px; overflow-y: scroll;  }
+div.scroll .win { background-color: #d9efe3; }
+div.scroll .loose { background-color: #f6dfdf;  }

@@ -196,6 +196,30 @@ if($action == 'getBannerSummen') {
 	echo json_encode($out);
 }
 
+if ($action == 'getGameHistory')
+{
+	$player = $_GET['player'];
+
+	$sql = 'SELECT spiele.preis, spiele.timestamp, ergebnis.gewinner, ergebnis.spielerID, ergebnis.spielID, spieltyp.name as spieltypname
+			FROM ergebnis
+			INNER JOIN spiele ON ergebnis.spielID = spiele.id
+			INNER JOIN spieltyp ON spieltyp.id = spiele.typID
+			WHERE ergebnis.spielerID = '.$player.' AND spiele.timestamp >= NOW() - INTERVAL 7 DAY ORDER BY spiele.timestamp ASC';
+
+	$stmt = $db->prepare($sql);
+	$stmt->execute();
+	$out = array();
+
+	while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		$out[$result['spielID']]['preis'] = $result['preis'];
+		$out[$result['spielID']]['typ'] = $result['spieltypname'];
+		$out[$result['spielID']]['timestamp'] = $result['timestamp'];
+		$out[$result['spielID']]['gewinner'] = ($result['gewinner'] == '1' ? true : false);
+	}
+
+	echo json_encode($out);
+}
+
 if($action == 'getListe') {
 	$date = isset($_GET['date']) ? $_GET['date'] : '';
 	$spiele = json_decode($_GET['spiele']);
