@@ -386,6 +386,7 @@ function showGames()
 		$("#historyDiv").html("");
 
 		$("#historyPlayer").off().on("change", function(){
+			$("#historyDiv").html("");
 			var id = $("#historyPlayer").val();
 			if (id == null || id == "" || id == undefined)
 				return;
