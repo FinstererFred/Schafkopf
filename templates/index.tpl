@@ -417,7 +417,9 @@ function showGames()
 							var price = game.preis;
 							if (game.gewinner && (game.typ == "Solo" || game.typ == "Geier" || game.typ == "Wenz"))
 								price = price * 3;
-							if (!game.gewinner)
+							else if (!game.gewinner && (game.typ == "Solo" || game.typ == "Geier" || game.typ == "Wenz"))
+								price = price * 3;
+							else if (!game.gewinner)
 								price = price * -1;
 
 							table += "<tr class='" + (game.gewinner ? "win" : "loose") + "'><td  width='100'>" + game.typ + "</td><td  width='100' style=\"text-align:right\">" + parseFloat(price/100).toFixed(2) + "</td></tr>";
@@ -716,7 +718,7 @@ function showGames()
 				}
 				else {
 					show_day = day-1;
-					_out += '<td width="130"><b>vor '+show_day+2+' Dog</b></td>';
+					_out += '<td width="130"><b>vor '+parseInt(show_day+1)+' Dog</b></td>';
 				}
 				for (var i in data){
 					summe_out = data[i][day] ? (data[i][day]/100).toFixed(2) : '';
