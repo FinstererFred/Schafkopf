@@ -19,6 +19,12 @@ ul { margin:0px;padding:0px;}
 	border:1px solid #aeaeae;
 	padding-bottom:20px;
 }
+.buttonBox {
+	border-radius: 3px;
+	background-color: #efefef;
+	border:1px solid #aeaeae;
+	padding:5px 15px;
+}
 
 .marquee {
  margin: auto;

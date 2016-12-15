@@ -12,7 +12,11 @@
 
 						<fieldset>
 							<div class="form-group">
-							<form action="index.php" method="post">
+							{if isset($template) && $template == 'overview'}
+								<form action="overview.php" method="post">
+							{else}
+								<form action="index.php" method="post">
+							{/if}
 								<input class="form-control" placeholder="Benutzername" name="username" type="text" autofocus>
 							</div>
 							<div class="form-group">

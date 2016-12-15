@@ -64,6 +64,11 @@
 				</table>
 			</div>
 		</div>
+		<div class="row overview">
+			<div class="col-md-12 buttonBox">
+				<a href="overview.php" target="_blank" class="btn btn-default">Übasicht ozeign</a>
+			</div>
+		</div>
 		
 		<!-- <br/>
 		<div class="row">
@@ -92,7 +97,9 @@
 			</div>
 		</div>
 		-->
+	
 	</div>
+	
 </div>
 
 
@@ -798,6 +805,7 @@ function showGames()
   			</div>
       </div>
       <div class="modal-footer">
+		<a href="overview.php" class="btn btn-default">Nix spuiln! Übasicht ozeign</a>
         <button type="button" class="btn btn-primary" id="spuiln">Spuiln</button>
       </div>
     </div>
