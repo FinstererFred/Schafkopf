@@ -161,7 +161,7 @@ class DBProvider {
 				if($key != 'id') {
 					if(!$value) $value = NULL;
 					if(strpos($key, 'timestamp') > -1) {
-
+					date_default_timezone_set( 'Europe/Berlin' );
 						$date = new DateTime($value);
 						$value = $date->format('Y-m-d H:i:s');
 
