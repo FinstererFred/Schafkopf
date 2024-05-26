@@ -85,8 +85,14 @@ if($action == 'getTische') {
 
 	if(!is_array($tische)) { $tische = array($tische); }
 
+	$i = 0;
 	foreach($tische as $tisch) {
-		$out[] = $tisch->toArray();
+		$tables[$i] = $tisch->toArray();
+		if ($tables[$i]['verantwortlicher'] == $id)
+		{
+			$out[] = $tables[$i];
+			$i++;
+		}
 	}
 
 	echo json_encode($out);
