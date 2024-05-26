@@ -7,8 +7,11 @@
     	<div class="row">
     		<div class="col-md-6 vcenter"><img src="gfx/logo.png" /></div><div class="col-md-6 text-right vcenter">
     		<a href="logout.php">logout</a>
+<!--
 			<marquee id="bannerinfo" class="marquee" onmouseover="this.stop();" onmouseout="this.start();" scrollamount="1"></marquee>
 			<i class="reloader fa fa-refresh" onclick="getBannerInfo();"></i>
+-->
+			<br/><br/>
 			<i class="history fa fa-history" onclick="showGames();"></i>
     		</div>
     	</div>
@@ -150,10 +153,6 @@
 			$('#tische').append(out);
 		});
 
-		$('#tische').on('change', function() {
-			getTisch($(this).val());
-		});
-
 		$('#spieler').on('click', 'li', function() {
 			$(this).toggleClass('gewinner');
 		});
@@ -269,12 +268,18 @@
 			var sp2 = $('#sp2').val(); 
 			var sp3 = $('#sp3').val(); 
 			var sp4 = $('#sp4').val(); 
-
-			spieler[ alleSpieler[findSpielerIndex(sp1)].id ] = alleSpieler[findSpielerIndex(sp1)];
-			spieler[ alleSpieler[findSpielerIndex(sp2)].id ] = alleSpieler[findSpielerIndex(sp2)];
-			spieler[ alleSpieler[findSpielerIndex(sp3)].id ] = alleSpieler[findSpielerIndex(sp3)];
-			spieler[ alleSpieler[findSpielerIndex(sp4)].id ] = alleSpieler[findSpielerIndex(sp4)];
-
+						
+			if (sp1 && sp2 && sp3 && sp4)
+			{
+				spieler[ alleSpieler[findSpielerIndex(sp1)].id ] = alleSpieler[findSpielerIndex(sp1)];
+				spieler[ alleSpieler[findSpielerIndex(sp2)].id ] = alleSpieler[findSpielerIndex(sp2)];
+				spieler[ alleSpieler[findSpielerIndex(sp3)].id ] = alleSpieler[findSpielerIndex(sp3)];
+				spieler[ alleSpieler[findSpielerIndex(sp4)].id ] = alleSpieler[findSpielerIndex(sp4)];
+			}
+			else 
+			{
+				getTisch($('#tische').val());
+			}
 			var out = '<tr><th width="130"></th>';
 			var outSpieler = '';
 
@@ -286,6 +291,7 @@
 
 			out += '<th width="20px"></th>';
 			out += "</tr>";
+
 			$('#theader').html(out);
 
 			$('#spieler').html(outSpieler);
@@ -691,7 +697,7 @@ function showGames()
 				shortCuts();
 			});
 	}
-	
+		
 	function getLastDayOverview() {
 		var _spieler = [];
 		var _out = '';
@@ -803,6 +809,16 @@ function showGames()
       				 <select class="form-control" id="sp4"></select>
     			</div>
   			</div>
+			
+			<h4 class="modal-title" id="myModalLabel">oder aus&auml;hlen</h4>
+			<br />
+				
+			<div class="form-group">
+				<label for="tische" class="col-sm-2 control-label">Tisch</label>
+				<div class="col-sm-8">
+					 <select class="form-control" id="tische"></select>
+				</div>
+			</div>
       </div>
       <div class="modal-footer">
 		<a href="overview.php" class="btn btn-default">Nix spuiln! Übasicht ozeign</a>
